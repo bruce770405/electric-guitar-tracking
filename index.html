@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎸 電吉他半年進階計畫</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff5722">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="電吉他計畫">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<style>
+  :root{
+    --bg:#0f1115; --card:#181b22; --card2:#1f232c; --accent:#ff5722;
+    --accent2:#ffc107; --text:#e8eaed; --muted:#9aa0a6; --ok:#4caf50;
+    --line:#2a2f3a; --blue:#1565c0; --purple:#6a1b9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.65;padding:0 0 80px}
+  header{background:linear-gradient(135deg,#ff5722,#ff9800);padding:32px 20px 24px;
+    text-align:center}
+  header h1{font-size:1.8em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+  header p{color:#fff;opacity:.95;margin-top:6px;font-size:.95em}
+  .wrap{max-width:940px;margin:0 auto;padding:0 16px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;background:var(--card);position:sticky;top:0;z-index:60;
+    padding:8px 8px 0;border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .tab{flex:1;text-align:center;padding:12px;cursor:pointer;color:var(--muted);
+    border-radius:8px 8px 0 0;font-weight:bold;font-size:.95em;transition:all .2s}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:#fff;background:var(--accent)}
+  .page{display:none}
+  .page.active{display:block;animation:fade .3s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .progress-bar{background:var(--card);padding:12px 16px;border-radius:0 0 12px 12px;
+    display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .progress-track{flex:1;height:14px;background:#2a2f3a;border-radius:8px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--accent2));
+    transition:width .4s ease;border-radius:8px}
+  .progress-text{font-size:.9em;color:var(--muted);white-space:nowrap;min-width:110px;text-align:right}
+  .reset-btn{background:var(--card2);color:var(--muted);border:1px solid var(--line);
+    padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.8em}
+  .reset-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+  .info-card{background:var(--card);border-radius:14px;padding:18px;margin:16px 0;
+    border:1px solid var(--line)}
+  .info-card h2{color:var(--accent2);font-size:1.1em;margin-bottom:12px}
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+  .info-item{background:var(--card2);padding:11px;border-radius:8px;font-size:.9em}
+  .info-item b{color:var(--accent2)}
+  .daily{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .daily div{background:var(--card2);padding:10px;border-radius:8px;font-size:.85em;text-align:center}
+  .daily b{display:block;color:var(--accent2);font-size:1.1em}
+
+  .phase{background:var(--card);border-radius:14px;margin:14px 0;overflow:hidden;border:1px solid var(--line)}
+  .phase-head{padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none}
+  .phase-head:hover{background:var(--card2)}
+  .phase-badge{background:var(--accent);color:#fff;font-weight:bold;padding:4px 10px;border-radius:6px;font-size:.82em;white-space:nowrap}
+  .phase-title{flex:1}
+  .phase-title h3{font-size:1.05em}
+  .phase-title span{font-size:.8em;color:var(--muted)}
+  .phase-mini{font-size:.8em;color:var(--ok);white-space:nowrap}
+  .arrow{transition:transform .3s;color:var(--muted)}
+  .phase.open .arrow{transform:rotate(90deg)}
+  .phase-body{max-height:0;overflow:hidden;transition:max-height .45s ease}
+  .phase.open .phase-body{max-height:9000px}
+  .phase-inner{padding:0 16px 16px}
+
+  .week{background:var(--card2);border-radius:10px;padding:12px 14px;margin:10px 0;border-left:3px solid var(--accent2)}
+  .week h4{color:var(--accent2);font-size:.95em;margin-bottom:6px}
+  .task{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px dashed #2a2f3a}
+  .task:last-child{border-bottom:none}
+  .task input{margin-top:4px;width:16px;height:16px;accent-color:var(--ok);cursor:pointer;flex-shrink:0}
+  .task .lbl{font-size:.9em;flex:1;cursor:pointer}
+  .task input:checked ~ .lbl .txt{color:var(--muted);text-decoration:line-through}
+  .tag{display:inline-block;font-size:.7em;padding:1px 7px;border-radius:4px;margin-right:6px;vertical-align:middle}
+  .t-skill{background:#1565c0;color:#fff}
+  .t-theory{background:#6a1b9a;color:#fff}
+  .t-song{background:#2e7d32;color:#fff}
+  .t-record{background:#c62828;color:#fff}
+  .learn-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);
+    font-size:.72em;padding:2px 9px;border-radius:12px;cursor:pointer;margin-left:6px;white-space:nowrap}
+  .learn-btn:hover{background:var(--accent);color:#fff}
+  .hand{font-size:.7em;margin-left:4px}
+  .hand-L{color:#64b5f6}.hand-R{color:#ffb74d}
+
+  .tip{background:linear-gradient(135deg,#1f232c,#181b22);border:1px dashed var(--accent2);
+    border-radius:10px;padding:14px;margin:18px 0;font-size:.88em}
+  .tip b{color:var(--accent2)}
+  footer{text-align:center;color:var(--muted);font-size:.82em;margin-top:24px}
+
+  /* Teaching page */
+  .lesson-search{width:100%;padding:12px 14px;background:var(--card2);border:1px solid var(--line);
+    border-radius:10px;color:var(--text);font-size:.95em;margin:14px 0}
+  .lesson-search::placeholder{color:var(--muted)}
+  .lesson{background:var(--card);border-radius:14px;margin:12px 0;border:1px solid var(--line);overflow:hidden;scroll-margin-top:80px}
+  .lesson-head{padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+  .lesson-head:hover{background:var(--card2)}
+  .lesson-head h3{flex:1;font-size:1em}
+  .lesson-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+  .lesson.open .lesson-body{max-height:4000px}
+  .lesson-inner{padding:4px 18px 20px}
+  .lesson-inner h4{color:var(--accent2);margin:14px 0 6px;font-size:.95em}
+  .lesson-inner p{font-size:.9em;margin:6px 0;color:#d4d7db}
+  .lesson-inner ol,.lesson-inner ul{margin:6px 0 6px 20px;font-size:.9em;color:#d4d7db}
+  .lesson-inner li{margin:3px 0}
+  .pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72em;font-weight:bold}
+  .pill-L{background:#0d47a1;color:#90caf9}
+  .pill-R{background:#e65100;color:#ffcc80}
+  .diagram{background:#fcfcfc;border-radius:10px;padding:14px;margin:10px 0;text-align:center;overflow-x:auto}
+  .diagram-cap{font-size:.78em;color:var(--muted);margin-top:6px}
+  .diagram-note{font-size:.8em;color:#5d4037;background:#fff8e1;border-radius:6px;padding:6px 10px;margin:-2px 0 10px;text-align:left}
+  .grp-title{margin:22px 0 4px;padding-top:12px;border-top:2px dashed var(--line,#ddd);font-size:1.02em;color:var(--accent,#c62828)}
+  .grp-desc{font-size:.85em;color:var(--muted);margin:0 0 8px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px;font-size:.72em;color:#555}
+  .legend span{display:inline-flex;align-items:center;gap:4px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .cue{background:var(--card2);border-left:3px solid var(--ok);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:.86em}
+  .cue b{color:var(--ok)}
+  .warn{background:var(--card2);border-left:3px solid #ef5350;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:.86em}
+  .warn b{color:#ef5350}
+  .no-result{text-align:center;color:var(--muted);padding:30px;font-size:.9em}
+
+  /* ---- Extras: dashboard/logs/songs ---- */
+  .page-title{font-size:1.3em;margin:18px 0 4px;color:var(--accent2)}
+  .sec-h{font-size:1.02em;margin:20px 0 8px;color:var(--accent2)}
+  .sec-sub{font-size:.78em;color:var(--muted);font-weight:normal}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+  .stat-num{font-size:1.5em;font-weight:bold;color:var(--accent)}
+  .stat-lbl{font-size:.82em;color:var(--muted);margin-top:4px}
+  .dash-plan{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;cursor:pointer;transition:.2s}
+  .dash-plan:hover{background:var(--card2)}
+  .dash-plan-top{display:flex;justify-content:space-between;font-size:.92em;margin-bottom:8px}
+  .dash-plan-top span{color:var(--muted)}
+  .dash-plan-desc{font-size:.78em;color:var(--muted);margin-top:6px}
+  .mini-track{height:10px;background:#2a2f3a;border-radius:6px;overflow:hidden}
+  .mini-fill{height:100%;background:linear-gradient(90deg,var(--ok),var(--accent2));border-radius:6px;transition:width .4s}
+  .plan-switcher{padding:10px 0;font-size:.9em;color:var(--muted)}
+  .plan-switcher select,.song-item select{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.9em}
+  .add-row{display:flex;gap:8px;margin:10px 0}
+  .add-row input{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 12px;font-size:.92em}
+  .add-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:1.1em;cursor:pointer;font-weight:bold}
+  .add-btn.wide{padding:11px 16px;font-size:.92em;width:100%}
+  .add-btn:hover{opacity:.9}
+  .backup-row{display:flex;flex-direction:column;gap:8px}
+  .li{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
+  .li label{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;font-size:.92em}
+  .li input{width:18px;height:18px;accent-color:var(--ok)}
+  .li .done{color:var(--muted);text-decoration:line-through}
+  .del{background:transparent;border:none;color:#ef5350;font-size:1em;cursor:pointer;padding:4px 8px;border-radius:6px}
+  .del:hover{background:rgba(239,83,80,.12)}
+  .hint{font-size:.8em;color:var(--muted);margin:8px 0}
+  /* logs */
+  .log-form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:14px 0}
+  .log-form label{display:block;font-size:.82em;color:var(--muted);margin:8px 0 0}
+  .log-form input,.log-form textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:9px 11px;font-size:.92em;margin-top:3px;font-family:inherit}
+  .log-form-row{display:flex;gap:8px}
+  .log-form-row label{flex:1}
+  .log-item{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent2);border-radius:10px;padding:11px 13px;margin:8px 0}
+  .log-item-head{display:flex;align-items:center;gap:10px}
+  .log-date{font-weight:bold;color:var(--accent2);font-size:.9em}
+  .log-meta{flex:1;font-size:.82em;color:var(--muted)}
+  .log-topic{font-size:.9em;margin-top:6px;color:#d4d7db}
+  .log-note{font-size:.86em;margin-top:4px;color:var(--muted);white-space:pre-wrap}
+  /* songs */
+  .song-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
+  .song-main{flex:1}
+  .song-note{font-size:.78em;color:var(--muted);margin-top:3px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎸 電吉他半年進階計畫</h1>
+  <p>計畫追蹤 × 互動教學 ｜ 24 週系統化練習</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-page="dash" onclick="switchTab('dash')">🏠 總覽</div>
+  <div class="tab" data-page="plan" onclick="switchTab('plan')">📋 計畫</div>
+  <div class="tab" data-page="logs" onclick="switchTab('logs')">✍️ 日誌</div>
+  <div class="tab" data-page="songs" onclick="switchTab('songs')">🎵 曲目</div>
+  <div class="tab" data-page="lessons" onclick="switchTab('lessons')">📚 技巧</div>
+  <div class="tab" data-page="theory" onclick="switchTab('theory')">🎼 樂理</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ DASHBOARD PAGE ============ -->
+  <div class="page active" id="page-dash">
+    <div id="dash"></div>
+    <footer>所有資料存在此瀏覽器；用上方「匯出備份」可換裝置 🤘</footer>
+  </div>
+
+  <!-- ============ PLAN PAGE ============ -->
+  <div class="page" id="page-plan">
+    <div id="planSwitcher" class="plan-switcher"></div>
+    <div class="progress-bar">
+      <div class="progress-track"><div class="progress-fill" id="fill"></div></div>
+      <span class="progress-text" id="ptext">0 / 0 (0%)</span>
+      <button class="reset-btn" onclick="resetAll()">重置</button>
+    </div>
+
+    <div class="info-card">
+      <h2>👤 學員設定</h2>
+      <div class="info-grid">
+        <div class="info-item"><b>程度</b><br>生鏽回鍋初學者（10+年沒碰）</div>
+        <div class="info-item"><b>每週</b><br>輕量 3–5hr（每天約30分）</div>
+        <div class="info-item"><b>方向</b><br>全面均衡 Rock/Blues/Funk/Pop</div>
+        <div class="info-item"><b>策略</b><br>喚醒手感 + 修正壞習慣 → 進階</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>⏱️ 每日 30 分鐘黃金結構</h2>
+      <div class="daily">
+        <div><b>5′</b>🔥 熱身爬格子+節拍器</div>
+        <div><b>10′</b>🎯 當週主題技巧</div>
+        <div><b>10′</b>🎵 練習曲 / riff</div>
+        <div><b>5′</b>🎼 樂理 / 聽力</div>
+      </div>
+    </div>
+
+    <div id="phases"></div>
+
+    <div class="tip">
+      <b>💡 核心心法：</b>慢而乾淨 &gt; 快而髒。先在「能彈乾淨的最慢速度」站穩，
+      再用節拍器每次 +5 BPM。天天碰琴比假日狂練重要。藍標 <span class="hand hand-L">✋左手</span>
+      與橙標 <span class="hand hand-R">🤚右手</span> 的技巧都有 📖 教學，點進去看指板圖／刷弦圖。
+    </div>
+    <footer>進度自動儲存在瀏覽器 localStorage ｜ 🤘</footer>
+  </div>
+
+  <!-- ============ LESSONS PAGE ============ -->
+  <div class="page" id="page-lessons">
+    <input class="lesson-search" id="lessonSearch" placeholder="🔍 搜尋技巧教學（例如：推弦、悶音、爬格子…）" oninput="filterLessons()">
+    <div id="lessons"></div>
+    <div class="no-result" id="noResult" style="display:none">找不到符合的教學 🤔</div>
+    <footer>左手技巧 → 指板圖 ✋ ｜ 右手技巧 → 撥弦/刷弦圖 🤚</footer>
+  </div>
+
+  <!-- ============ THEORY PAGE ============ -->
+  <div class="page" id="page-theory">
+    <input class="lesson-search" id="theorySearch" placeholder="🔍 搜尋樂理（例如：五聲音階、級數、切分…）" oninput="filterTheory()">
+    <div id="theory"></div>
+    <div class="no-result" id="noResultT" style="display:none">找不到符合的樂理 🤔</div>
+    <footer>從技巧教學點「🔗 樂理補充」可快速跳到對應主題 🎼</footer>
+  </div>
+
+  <!-- ============ LOGS PAGE ============ -->
+  <div class="page" id="page-logs">
+    <h2 class="page-title">✍️ 練功日誌</h2>
+    <div id="logsBody"></div>
+  </div>
+
+  <!-- ============ SONGS PAGE ============ -->
+  <div class="page" id="page-songs">
+    <h2 class="page-title">🎵 曲目庫</h2>
+    <div id="songsBody"></div>
+  </div>
+
+</div>
+
+<script src="store.js"></script>
+<script src="plan-data.js"></script>
+<script src="theory-data.js"></script>
+<script src="plan-engine.js"></script>
+<script src="extras.js"></script>
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>

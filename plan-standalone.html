@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎸 電吉他半年進階計畫</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#181b22; --card2:#1f232c; --accent:#ff5722;
+    --accent2:#ffc107; --text:#e8eaed; --muted:#9aa0a6; --ok:#4caf50;
+    --line:#2a2f3a; --blue:#1565c0; --purple:#6a1b9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.65;padding:0 0 80px}
+  header{background:linear-gradient(135deg,#ff5722,#ff9800);padding:32px 20px 24px;
+    text-align:center}
+  header h1{font-size:1.8em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+  header p{color:#fff;opacity:.95;margin-top:6px;font-size:.95em}
+  .wrap{max-width:940px;margin:0 auto;padding:0 16px}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;background:var(--card);position:sticky;top:0;z-index:60;
+    padding:8px 8px 0;border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .tab{flex:1;text-align:center;padding:12px;cursor:pointer;color:var(--muted);
+    border-radius:8px 8px 0 0;font-weight:bold;font-size:.95em;transition:all .2s}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:#fff;background:var(--accent)}
+  .page{display:none}
+  .page.active{display:block;animation:fade .3s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .progress-bar{background:var(--card);padding:12px 16px;border-radius:0 0 12px 12px;
+    display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .progress-track{flex:1;height:14px;background:#2a2f3a;border-radius:8px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--accent2));
+    transition:width .4s ease;border-radius:8px}
+  .progress-text{font-size:.9em;color:var(--muted);white-space:nowrap;min-width:110px;text-align:right}
+  .reset-btn{background:var(--card2);color:var(--muted);border:1px solid var(--line);
+    padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.8em}
+  .reset-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+  .info-card{background:var(--card);border-radius:14px;padding:18px;margin:16px 0;
+    border:1px solid var(--line)}
+  .info-card h2{color:var(--accent2);font-size:1.1em;margin-bottom:12px}
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+  .info-item{background:var(--card2);padding:11px;border-radius:8px;font-size:.9em}
+  .info-item b{color:var(--accent2)}
+  .daily{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .daily div{background:var(--card2);padding:10px;border-radius:8px;font-size:.85em;text-align:center}
+  .daily b{display:block;color:var(--accent2);font-size:1.1em}
+
+  .phase{background:var(--card);border-radius:14px;margin:14px 0;overflow:hidden;border:1px solid var(--line)}
+  .phase-head{padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none}
+  .phase-head:hover{background:var(--card2)}
+  .phase-badge{background:var(--accent);color:#fff;font-weight:bold;padding:4px 10px;border-radius:6px;font-size:.82em;white-space:nowrap}
+  .phase-title{flex:1}
+  .phase-title h3{font-size:1.05em}
+  .phase-title span{font-size:.8em;color:var(--muted)}
+  .phase-mini{font-size:.8em;color:var(--ok);white-space:nowrap}
+  .arrow{transition:transform .3s;color:var(--muted)}
+  .phase.open .arrow{transform:rotate(90deg)}
+  .phase-body{max-height:0;overflow:hidden;transition:max-height .45s ease}
+  .phase.open .phase-body{max-height:9000px}
+  .phase-inner{padding:0 16px 16px}
+
+  .week{background:var(--card2);border-radius:10px;padding:12px 14px;margin:10px 0;border-left:3px solid var(--accent2)}
+  .week h4{color:var(--accent2);font-size:.95em;margin-bottom:6px}
+  .task{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:1px dashed #2a2f3a}
+  .task:last-child{border-bottom:none}
+  .task input{margin-top:4px;width:16px;height:16px;accent-color:var(--ok);cursor:pointer;flex-shrink:0}
+  .task .lbl{font-size:.9em;flex:1;cursor:pointer}
+  .task input:checked ~ .lbl .txt{color:var(--muted);text-decoration:line-through}
+  .tag{display:inline-block;font-size:.7em;padding:1px 7px;border-radius:4px;margin-right:6px;vertical-align:middle}
+  .t-skill{background:#1565c0;color:#fff}
+  .t-theory{background:#6a1b9a;color:#fff}
+  .t-song{background:#2e7d32;color:#fff}
+  .t-record{background:#c62828;color:#fff}
+  .learn-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);
+    font-size:.72em;padding:2px 9px;border-radius:12px;cursor:pointer;margin-left:6px;white-space:nowrap}
+  .learn-btn:hover{background:var(--accent);color:#fff}
+  .hand{font-size:.7em;margin-left:4px}
+  .hand-L{color:#64b5f6}.hand-R{color:#ffb74d}
+
+  .tip{background:linear-gradient(135deg,#1f232c,#181b22);border:1px dashed var(--accent2);
+    border-radius:10px;padding:14px;margin:18px 0;font-size:.88em}
+  .tip b{color:var(--accent2)}
+  footer{text-align:center;color:var(--muted);font-size:.82em;margin-top:24px}
+
+  /* Teaching page */
+  .lesson-search{width:100%;padding:12px 14px;background:var(--card2);border:1px solid var(--line);
+    border-radius:10px;color:var(--text);font-size:.95em;margin:14px 0}
+  .lesson-search::placeholder{color:var(--muted)}
+  .lesson{background:var(--card);border-radius:14px;margin:12px 0;border:1px solid var(--line);overflow:hidden;scroll-margin-top:80px}
+  .lesson-head{padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;user-select:none}
+  .lesson-head:hover{background:var(--card2)}
+  .lesson-head h3{flex:1;font-size:1em}
+  .lesson-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+  .lesson.open .lesson-body{max-height:4000px}
+  .lesson-inner{padding:4px 18px 20px}
+  .lesson-inner h4{color:var(--accent2);margin:14px 0 6px;font-size:.95em}
+  .lesson-inner p{font-size:.9em;margin:6px 0;color:#d4d7db}
+  .lesson-inner ol,.lesson-inner ul{margin:6px 0 6px 20px;font-size:.9em;color:#d4d7db}
+  .lesson-inner li{margin:3px 0}
+  .pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72em;font-weight:bold}
+  .pill-L{background:#0d47a1;color:#90caf9}
+  .pill-R{background:#e65100;color:#ffcc80}
+  .diagram{background:#fcfcfc;border-radius:10px;padding:14px;margin:10px 0;text-align:center;overflow-x:auto}
+  .diagram-cap{font-size:.78em;color:var(--muted);margin-top:6px}
+  .diagram-note{font-size:.8em;color:#5d4037;background:#fff8e1;border-radius:6px;padding:6px 10px;margin:-2px 0 10px;text-align:left}
+  .grp-title{margin:22px 0 4px;padding-top:12px;border-top:2px dashed var(--line,#ddd);font-size:1.02em;color:var(--accent,#c62828)}
+  .grp-desc{font-size:.85em;color:var(--muted);margin:0 0 8px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px;font-size:.72em;color:#555}
+  .legend span{display:inline-flex;align-items:center;gap:4px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .cue{background:var(--card2);border-left:3px solid var(--ok);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:.86em}
+  .cue b{color:var(--ok)}
+  .warn{background:var(--card2);border-left:3px solid #ef5350;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:.86em}
+  .warn b{color:#ef5350}
+  .no-result{text-align:center;color:var(--muted);padding:30px;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎸 電吉他半年進階計畫</h1>
+  <p>計畫追蹤 × 互動教學 ｜ 24 週系統化練習</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-page="plan" onclick="switchTab('plan')">📋 計畫總覽</div>
+  <div class="tab" data-page="lessons" onclick="switchTab('lessons')">📚 技巧教學</div>
+  <div class="tab" data-page="theory" onclick="switchTab('theory')">🎼 樂理補充</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ PLAN PAGE ============ -->
+  <div class="page active" id="page-plan">
+    <div class="progress-bar">
+      <div class="progress-track"><div class="progress-fill" id="fill"></div></div>
+      <span class="progress-text" id="ptext">0 / 0 (0%)</span>
+      <button class="reset-btn" onclick="resetAll()">重置</button>
+    </div>
+
+    <div class="info-card">
+      <h2>👤 學員設定</h2>
+      <div class="info-grid">
+        <div class="info-item"><b>程度</b><br>生鏽回鍋初學者（10+年沒碰）</div>
+        <div class="info-item"><b>每週</b><br>輕量 3–5hr（每天約30分）</div>
+        <div class="info-item"><b>方向</b><br>全面均衡 Rock/Blues/Funk/Pop</div>
+        <div class="info-item"><b>策略</b><br>喚醒手感 + 修正壞習慣 → 進階</div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>⏱️ 每日 30 分鐘黃金結構</h2>
+      <div class="daily">
+        <div><b>5′</b>🔥 熱身爬格子+節拍器</div>
+        <div><b>10′</b>🎯 當週主題技巧</div>
+        <div><b>10′</b>🎵 練習曲 / riff</div>
+        <div><b>5′</b>🎼 樂理 / 聽力</div>
+      </div>
+    </div>
+
+    <div id="phases"></div>
+
+    <div class="tip">
+      <b>💡 核心心法：</b>慢而乾淨 &gt; 快而髒。先在「能彈乾淨的最慢速度」站穩，
+      再用節拍器每次 +5 BPM。天天碰琴比假日狂練重要。藍標 <span class="hand hand-L">✋左手</span>
+      與橙標 <span class="hand hand-R">🤚右手</span> 的技巧都有 📖 教學，點進去看指板圖／刷弦圖。
+    </div>
+    <footer>進度自動儲存在瀏覽器 localStorage ｜ 🤘</footer>
+  </div>
+
+  <!-- ============ LESSONS PAGE ============ -->
+  <div class="page" id="page-lessons">
+    <input class="lesson-search" id="lessonSearch" placeholder="🔍 搜尋技巧教學（例如：推弦、悶音、爬格子…）" oninput="filterLessons()">
+    <div id="lessons"></div>
+    <div class="no-result" id="noResult" style="display:none">找不到符合的教學 🤔</div>
+    <footer>左手技巧 → 指板圖 ✋ ｜ 右手技巧 → 撥弦/刷弦圖 🤚</footer>
+  </div>
+
+  <!-- ============ THEORY PAGE ============ -->
+  <div class="page" id="page-theory">
+    <input class="lesson-search" id="theorySearch" placeholder="🔍 搜尋樂理（例如：五聲音階、級數、切分…）" oninput="filterTheory()">
+    <div id="theory"></div>
+    <div class="no-result" id="noResultT" style="display:none">找不到符合的樂理 🤔</div>
+    <footer>從技巧教學點「🔗 樂理補充」可快速跳到對應主題 🎼</footer>
+  </div>
+
+</div>
+
+<script>
+/* === plan-data.js === */
+/* ============================================================
+   課綱資料 + 教學內容
+   每個 task: [type, text, hand, lessonId]
+     type : skill | theory | song | record
+     hand : "L"(左手) | "R"(右手) | "" (無/雙手/概念)
+     lessonId : 對應 LESSONS 的 key（有教學頁才填）
+   ============================================================ */
+const DATA = [
+  {badge:"Phase 1", month:"M1", title:"喚醒與校正", sub:"W1–W4 ｜ 找回手感、修正姿勢與撥弦", weeks:[
+    {w:"W1 找回手感", tasks:[
+      ["skill","姿勢校正：坐/站姿、吉他角度、左手拇指放琴頸背中央","L","posture"],
+      ["skill","Pick 握法定型，下上交替撥弦自然進行","R","pick-grip"],
+      ["skill","爬格子 1-2-3-4 順階，節拍器 60 BPM 乾淨無雜音","L","chromatic"],
+      ["theory","重新熟悉前 5 格音名、六線譜/TAB 看法","","read-tab"],
+    ]},
+    {w:"W2 左右手獨立", tasks:[
+      ["skill","爬格子加速到 70–80 BPM 仍乾淨","L","chromatic"],
+      ["skill","單弦上下行練習，交替撥弦力道一致","R","alt-pick"],
+      ["theory","認識節拍器：4/4 拍、四分/八分音符","","rhythm-basic"],
+    ]},
+    {w:"W3 基礎和弦喚醒", tasks:[
+      ["skill","開放和弦 Mi 指型家族 E/Em/E7/Em7，感受放開手指的大小調切換","L","open-chords"],
+      ["skill","常用開放和弦 Am / G / C / D 換和弦不斷拍","L","open-chords"],
+      ["skill","右手先練『民謠萬用型 D-DU-UDU』配單一和弦","R","open-chords"],
+      ["theory","和弦圖讀法、按弦指法編號","","read-tab"],
+    ]},
+    {w:"W4 整合 + 第一次錄音", tasks:[
+      ["skill","爬格子目標 90 BPM 乾淨","L","chromatic"],
+      ["song","用 Em-G-C-D 彈一段簡單伴奏","R","strum-basic"],
+      ["record","錄一段爬格子 + 和弦轉換，當作基準線","",""],
+    ]},
+  ]},
+  {badge:"Phase 2", month:"M2", title:"基礎重建", sub:"W5–W8 ｜ 五聲音階・Power Chord・悶音・推弦", weeks:[
+    {w:"W5 小調五聲音階", tasks:[
+      ["skill","Am 五聲音階第1把位（第5格）上下行","L","pentatonic"],
+      ["skill","節拍器 60–70 BPM 一音一拍","R","alt-pick"],
+      ["theory","根音概念：A 在第6弦第5格","","pentatonic"],
+    ]},
+    {w:"W6 Power Chord", tasks:[
+      ["skill","Power chord 兩弦/三弦型，全指板移動","L","power-chord"],
+      ["skill","6弦根音 & 5弦根音切換","L","power-chord"],
+      ["theory","音程：完全五度概念","","power-chord"],
+    ]},
+    {w:"W7 Palm Muting 悶音", tasks:[
+      ["skill","右手手刀悶音，配 power chord 做律動","R","palm-mute"],
+      ["skill","八分音符悶音刷 80 BPM","R","palm-mute"],
+      ["song","用 power chord + 悶音彈一段 rock riff","R","palm-mute"],
+    ]},
+    {w:"W8 基礎推弦 + 錄音", tasks:[
+      ["skill","半音 / 全音推弦入門，三指合力推","L","bending"],
+      ["record","錄五聲音階 + 一段悶音 riff 自評","",""],
+      ["theory","月底自評：乾淨/節奏/音準/流暢/音樂性","",""],
+    ]},
+  ]},
+  {badge:"Phase 3", month:"M3", title:"技巧擴張", sub:"W9–W12 ｜ 搥勾滑・推弦音準・提速・切分", weeks:[
+    {w:"W9 搥弦勾弦 (HOPO)", tasks:[
+      ["skill","Hammer-on / Pull-off 在五聲音階上練","L","hopo"],
+      ["skill","左手力道訓練，不靠右手出聲","L","hopo"],
+    ]},
+    {w:"W10 滑音 + Vibrato", tasks:[
+      ["skill","Slide 上下滑準確到目標格","L","slide"],
+      ["skill","Vibrato 顫音：手腕帶動，穩定頻率","L","vibrato"],
+    ]},
+    {w:"W11 推弦音準校正", tasks:[
+      ["skill","推弦對照空弦/目標音，校正全音半音","L","bending"],
+      ["theory","切分音、附點、休止符律動","","syncopation"],
+    ]},
+    {w:"W12 提速 + 錄音", tasks:[
+      ["skill","交替撥弦階梯加速：每天 +5 BPM","R","alt-pick"],
+      ["song","串聯 HOPO+滑音+推弦成一個小樂句","L","hopo"],
+      ["record","錄樂句自評，對照 W8 進步","",""],
+    ]},
+  ]},
+  {badge:"Phase 4", month:"M4", title:"樂理與指板", sub:"W13–W16 ｜ CAGED・全指板・和弦級數", weeks:[
+    {w:"W13 CAGED 入門", tasks:[
+      ["theory","CAGED 五型概念，C 與 A 型把位","","caged"],
+      ["skill","同一和弦不同把位彈出","L","caged"],
+    ]},
+    {w:"W14 五聲音階串把位", tasks:[
+      ["skill","五聲音階第1→第2把位連接","L","pentatonic2"],
+      ["skill","跨把位上下行流暢","L","pentatonic2"],
+    ]},
+    {w:"W15 大調/小調音階", tasks:[
+      ["theory","大調音階公式 (全全半全全全半)","","major-scale"],
+      ["skill","C 大調 / A 小調全指板","L","major-scale"],
+    ]},
+    {w:"W16 和弦級數 + 抓歌", tasks:[
+      ["theory","順階和弦 I–IV–V、ii–V–I","","diatonic"],
+      ["song","用級數抓一首簡單流行歌和弦","","diatonic"],
+      ["record","月底自評錄音","",""],
+    ]},
+  ]},
+  {badge:"Phase 5", month:"M5", title:"曲風探索", sub:"W17–W20 ｜ Rock・Blues・Funk・Pop", weeks:[
+    {w:"W17 Rock 搖滾", tasks:[
+      ["skill","經典 riff + 破音 tone 調整","R","palm-mute"],
+      ["song","練一段你喜歡的 rock riff","R","palm-mute"],
+    ]},
+    {w:"W18 Blues 藍調", tasks:[
+      ["theory","Blues scale（五聲+blue note）","L","blues-scale"],
+      ["song","12 小節 blues 進行 + 即興問答句","L","blues-scale"],
+    ]},
+    {w:"W19 Funk 放克", tasks:[
+      ["skill","16分音符切分悶音 cutting 刷弦","R","funk-strum"],
+      ["song","跟 funk backing track 練律動","R","funk-strum"],
+    ]},
+    {w:"W20 Pop 流行", tasks:[
+      ["skill","clean tone 分解和弦 (arpeggio)","R","arpeggio"],
+      ["song","一首抒情歌副歌 + 簡單 solo","",""],
+      ["record","錄一個你最喜歡的曲風段落","",""],
+    ]},
+  ]},
+  {badge:"Phase 6", month:"M6", title:"進階整合", sub:"W21–W24 ｜ 即興・完整曲目・錄音產出", weeks:[
+    {w:"W21 即興 solo 基礎", tasks:[
+      ["skill","套用音階 + 樂句庫，跟 backing track 即興","L","improv"],
+      ["theory","建立 3–5 個自己的招牌樂句 (licks)","L","improv"],
+    ]},
+    {w:"W22 完整曲目 (1)", tasks:[
+      ["song","選第1首歌，分段練熟到能整首彈","",""],
+    ]},
+    {w:"W23 完整曲目 (2)(3)", tasks:[
+      ["song","第2、3首不同曲風，分段攻克","",""],
+    ]},
+    {w:"W24 錄音產出 + 複盤", tasks:[
+      ["record","錄製 3 首作品，簡單後製","",""],
+      ["theory","半年複盤，規劃下半年方向","",""],
+    ]},
+  ]},
+];
+
+/* ============================================================
+   教學內容 LESSONS
+   diagram 種類:
+   - fretboard: 指板圖 {type,startFret,frets,dots:[{s弦1-6,f格,l標籤,c顏色,t記號}]}
+       t記號: bend(推弦↑) bendH(半音) ho(搥) po(勾) sl(滑) vib(顫) root(根音)
+   - strum: 刷弦/撥弦圖 {type,beats:[{b拍,d方向D/U/-,m悶音,a重音}]}
+   ============================================================ */
+const LESSONS = {
+  /* ---------- 左手 ✋ ---------- */
+  "posture":{hand:"L",title:"姿勢與左手基本",cat:"基礎",
+    intro:"一切的起點。錯誤姿勢會限制速度、製造雜音、甚至受傷。回鍋最重要的就是先把姿勢歸零重建。",
+    sections:[
+      {h:"左手手型要點",list:[
+        "拇指放在<b>琴頸背面中央</b>，不要勾over到指板上（除非特殊技巧）",
+        "指尖<b>立起來</b>用指腹尖端按弦，指甲要剪短",
+        "按在<b>琴衍(fret)旁邊</b>靠近高音側，不是正中央，省力又乾淨",
+        "手腕自然微彎，不要過度彎折",
+      ]},
+      {h:"坐姿/站姿",list:[
+        "坐姿：吉他凹槽放右腿，琴頸略朝上約 15°",
+        "站姿：背帶調整到坐姿同高度，避免換姿勢手型跑掉",
+        "螢幕/譜放正前方，不要長期歪頭",
+      ]},
+    ],
+    cues:["指尖立起、靠近琴衍、力道剛好讓音乾淨即可"],
+    warns:["拇指死命勾住琴頸 → 手會很快酸、無法擴張"],
+    diagram:{type:"fretboard",startFret:1,frets:4,caption:"左手按弦位置：按在琴衍旁(高音側)，非格子正中",
+      dots:[{s:5,f:2,l:"2",c:"#1565c0"},{s:4,f:2,l:"3",c:"#1565c0"},{s:3,f:1,l:"1",c:"#1565c0"}]}},
+
+  "chromatic":{hand:"L",title:"爬格子 1-2-3-4（半音練習）",cat:"基礎",
+    intro:"最重要的熱身與基本功。訓練左手四指獨立、左右手同步、按弦乾淨度。每天必做。",
+    sections:[
+      {h:"動作分解",list:[
+        "第6弦：食指(1)按第1格、中指(2)第2格、無名(3)第3格、小指(4)第4格，逐一彈出",
+        "按下後的手指<b>留在弦上</b>不要抬，直到該弦全部彈完",
+        "彈完第6弦移到第5弦，依此類推到第1弦，再反向爬回",
+        "右手嚴格<b>下上下上</b>交替撥弦",
+      ]},
+      {h:"進度階梯",list:[
+        "W1: 60 BPM 乾淨無雜音","W2: 70–80 BPM","W4: 90 BPM",
+        "規則：彈不乾淨就退回上一個速度，慢而乾淨優先",
+      ]},
+    ],
+    cues:["每個音時值一致、像節拍器一樣平均","手指貼著弦，移動距離越小越好"],
+    warns:["手指亂飛、抬太高 → 速度上不去","只練快不練乾淨 → 養成雜音壞習慣"],
+    diagram:{type:"fretboard",startFret:1,frets:4,caption:"第6弦示範：食1→中2→無名3→小指4",
+      dots:[{s:6,f:1,l:"1",c:"#1565c0"},{s:6,f:2,l:"2",c:"#1565c0"},{s:6,f:3,l:"3",c:"#1565c0"},{s:6,f:4,l:"4",c:"#1565c0"}]}},
+
+  "open-chords":{hand:"L",title:"開放和弦 (Open Chords) 大全 + 右手刷法",cat:"和弦",
+    intro:"流行/搖滾伴奏的根基，也是回鍋最該先找回的肌肉記憶。<b>開放和弦</b>=善用空弦(不按也會響的弦)，讓左手最省力、聲音最開闊飽滿。本頁分三塊：①<b>Mi 指型(E 型)家族</b>——以 E/Em 開放形狀為核心的一整組和弦；②<b>常用開放和弦全集</b>；③<b>右手刷法</b>(含各曲風)。<br>圖例：○=彈空弦、✕=不要撥的弦、圓點數字=按弦手指(1食 2中 3無名 4小指)。",
+    sections:[
+      {h:"開放和弦的核心觀念",list:[
+        "<b>盡量讓空弦響</b>：開放和弦的飽滿感來自沒按的空弦，按弦手指不要碰到旁邊的空弦",
+        "指尖<b>立起來</b>按弦，關節不塌，才不會悶到下面那條該響的弦",
+        "按好後<b>逐弦撥一次</b>檢查：每條該響的都乾淨、每條 ✕ 的都有悶住",
+        "換和弦先找<b>共同指/錨點指</b>不放，其餘手指再移動",
+      ]},
+      {h:"Mi 指型 (E 型) 家族——先吃透這一組",list:[
+        "E 大調家族全部以<b>第6弦(低音E)空弦當根音</b>，聲音最厚、最搖滾",
+        "E → Em 只要<b>放開第3弦(G)上的食指</b>；E → E7 放開第4弦(D)上的無名指",
+        "同一個 E 形狀往右移+食指橫按 = 所有<b>封閉和弦(F, F#…)</b>的來源，先把開放形狀練熟",
+        "Em / Em7 是全指板最好按的和弦，最適合當第一個練換和弦的錨點",
+      ]},
+      {h:"換和弦小技巧",list:[
+        "Em↔Am：整個手型<b>平移一條弦</b>，形狀幾乎一樣，最好上手",
+        "E↔A↔D：三個都是同曲風常見進行，練『手掌整體位移』",
+        "C→G：用<b>無名指</b>當引導指先到位；C→Am 食指中指幾乎不動",
+        "D / Dm / D7 只撥<b>下面4條弦</b>(6、5弦不彈)",
+      ]},
+    ],
+    cues:["換和弦時眼睛先看下一個和弦的『目標指』","保留不動的手指當錨點，減少移動","✕的弦要用鄰指指腹輕觸悶住，不要讓它響","開放和弦要讓空弦盡量『響好響滿』"],
+    warns:["每次換和弦都整手放開重按 → 換太慢","指尖沒立起來、壓到隔壁空弦 → 和弦悶掉、不開闊","撥到標 ✕ 的弦 → 和弦會濁掉"],
+    diagram:{type:"fretboard",startFret:1,frets:4,caption:"Em（Mi 指型核心｜最好按，先學這個）",
+      marks:{6:"o",5:"f",4:"f",3:"o",2:"o",1:"o"},
+      dots:[{s:5,f:2,l:"2",c:"#1565c0"},{s:4,f:2,l:"3",c:"#1565c0"}]},
+    extra:[
+      /* ========== ① Mi 指型 (E 型) 家族 ========== */
+      {type:"fretboard",startFret:1,frets:4,legend:true,
+        groupTitle:"① Mi 指型 (E 型) 家族",
+        groupDesc:"根音都在第6弦空弦(低音E)，聲音最厚。這一整組彼此只差 1~2 隻手指，超好連動——建議一起練。",
+        caption:"E 大三和弦（6弦空弦當根音，最飽滿）",
+        marks:{6:"o",5:"f",4:"f",3:"f",2:"o",1:"o"},
+        dots:[{s:5,f:2,l:"2",c:"#1565c0"},{s:4,f:2,l:"3",c:"#1565c0"},{s:3,f:1,l:"1",c:"#1565c0"}],
+        note:"把 E 的『食指(3弦1格)』放開，就變成 Em——這是最直接的大小調切換感受。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Em 小三和弦（放開 E 的食指即可）",
+        marks:{6:"o",5:"f",4:"f",3:"o",2:"o",1:"o"},
+        dots:[{s:5,f:2,l:"2",c:"#1565c0"},{s:4,f:2,l:"3",c:"#1565c0"}],
+        note:"Em ↔ Am 只是把整個手型往高音弦平移一條弦，兩個一起練換最有效率。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"E7（放開 E 的無名指，4弦變空弦）",
+        marks:{6:"o",5:"f",4:"o",3:"f",2:"o",1:"o"},
+        dots:[{s:5,f:2,l:"2",c:"#1565c0"},{s:3,f:1,l:"1",c:"#1565c0"}],
+        note:"藍調/搖滾進行常用。E7→A7→B7 就是一組 12 小節 blues 的骨架。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Em7（Em 再放開手指，全空弦超好按）",
+        marks:{6:"o",5:"f",4:"o",3:"o",2:"o",1:"o"},
+        dots:[{s:5,f:2,l:"1",c:"#1565c0"}],
+        note:"只按 1 隻手指！情歌、抒情伴奏最常用的『空氣感』和弦。"},
+
+      /* ========== ② 常用開放和弦全集 ========== */
+      {type:"fretboard",startFret:1,frets:4,legend:true,
+        groupTitle:"② 常用開放和弦全集",
+        groupDesc:"流行歌 90% 都由這些和弦組成。分『大三／小三／七和弦／修飾和弦』四小類，挑你歌裡會用到的先練。",
+        caption:"A 大三和弦（6弦不彈，三指並排2格）",
+        marks:{6:"x",5:"o",4:"f",3:"f",2:"f",1:"o"},
+        dots:[{s:4,f:2,l:"1",c:"#1565c0"},{s:3,f:2,l:"2",c:"#1565c0"},{s:2,f:2,l:"3",c:"#1565c0"}],
+        note:"三隻手指要擠在同一格、又不能碰到第1弦空弦——立指是關鍵。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"D 大三和弦（只撥下面4弦，呈三角形）",
+        marks:{6:"x",5:"x",4:"o",3:"f",2:"f",1:"f"},
+        dots:[{s:3,f:2,l:"1",c:"#1565c0"},{s:1,f:2,l:"2",c:"#1565c0"},{s:2,f:3,l:"3",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"G 大三和弦（横跨6弦到1弦）",
+        marks:{6:"f",5:"f",4:"o",3:"o",2:"o",1:"f"},
+        dots:[{s:6,f:3,l:"2",c:"#1565c0"},{s:5,f:2,l:"1",c:"#1565c0"},{s:1,f:3,l:"3",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"C 大三和弦（6弦不彈）",
+        marks:{6:"x",5:"f",4:"f",3:"o",2:"f",1:"o"},
+        dots:[{s:5,f:3,l:"3",c:"#1565c0"},{s:4,f:2,l:"2",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Am 小三和弦（C 稍微移一下就到）",
+        marks:{6:"x",5:"o",4:"f",3:"f",2:"f",1:"o"},
+        dots:[{s:4,f:2,l:"2",c:"#1565c0"},{s:3,f:2,l:"3",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Dm 小三和弦（只撥下面4弦）",
+        marks:{6:"x",5:"x",4:"o",3:"f",2:"f",1:"f"},
+        dots:[{s:3,f:2,l:"2",c:"#1565c0"},{s:1,f:1,l:"1",c:"#1565c0"},{s:2,f:3,l:"3",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"F（簡化版｜食指小橫按前2弦，只撥下4弦）",
+        marks:{6:"x",5:"x",4:"f",3:"f",2:"f",1:"f"},
+        dots:[{s:4,f:3,l:"3",c:"#1565c0"},{s:3,f:2,l:"2",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"},{s:1,f:1,l:"1",c:"#1565c0"}],
+        note:"完整 F 要大橫按，回鍋先用這個『迷你 F』過渡：食指同時壓住第1、2弦第1格。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"G7（G 把小指換到1弦1格）",
+        marks:{6:"f",5:"f",4:"o",3:"o",2:"o",1:"f"},
+        dots:[{s:6,f:3,l:"3",c:"#1565c0"},{s:5,f:2,l:"2",c:"#1565c0"},{s:1,f:1,l:"1",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"C7（C 加無名指壓3弦3格）",
+        marks:{6:"x",5:"f",4:"f",3:"f",2:"f",1:"o"},
+        dots:[{s:5,f:3,l:"3",c:"#1565c0"},{s:4,f:2,l:"2",c:"#1565c0"},{s:3,f:3,l:"4",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"A7（A 放開第3弦，藍調常用）",
+        marks:{6:"x",5:"o",4:"f",3:"o",2:"f",1:"o"},
+        dots:[{s:4,f:2,l:"1",c:"#1565c0"},{s:2,f:2,l:"3",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"D7（只撥下4弦，藍調收尾常用）",
+        marks:{6:"x",5:"x",4:"o",3:"f",2:"f",1:"f"},
+        dots:[{s:3,f:2,l:"2",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"},{s:1,f:2,l:"3",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Am7（Am 放開第1弦上的音，柔和）",
+        marks:{6:"x",5:"o",4:"f",3:"o",2:"f",1:"o"},
+        dots:[{s:4,f:2,l:"2",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"}]},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Cadd9（C 系列超好聽的流行色彩）",
+        marks:{6:"x",5:"f",4:"f",3:"o",2:"f",1:"f"},
+        dots:[{s:5,f:3,l:"2",c:"#1565c0"},{s:4,f:2,l:"1",c:"#1565c0"},{s:2,f:3,l:"3",c:"#1565c0"},{s:1,f:3,l:"4",c:"#1565c0"}],
+        note:"G→Cadd9→Em7→D 是芭樂神進行的常見美化版，超好用。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Dsus4（D 加小指，製造『想解決』的張力）",
+        marks:{6:"x",5:"x",4:"o",3:"f",2:"f",1:"f"},
+        dots:[{s:3,f:2,l:"1",c:"#1565c0"},{s:2,f:3,l:"3",c:"#1565c0"},{s:1,f:3,l:"4",c:"#1565c0"}],
+        note:"D→Dsus4→D 的手指開合是民謠/搖滾超常見的裝飾動作。"},
+      {type:"fretboard",startFret:1,frets:4,
+        caption:"Dsus2（D 放開第1弦，空靈感）",
+        marks:{6:"x",5:"x",4:"o",3:"f",2:"o",1:"o"},
+        dots:[{s:3,f:2,l:"1",c:"#1565c0"}]},
+
+      /* ========== ③ 右手刷法 (含各曲風) ========== */
+      {type:"strum",legend:true,
+        groupTitle:"③ 右手刷法 (Strumming) — 各曲風常用型",
+        groupDesc:"左手按同一個開放和弦，換不同刷法就是不同曲風。手腕像鐘擺『全程不停擺動』，用碰弦/不碰弦控制節奏。先慢速把型記熟。",
+        caption:"a. 民謠萬用型 D-DU-UDU（新手第一個必背）",
+        beats:[{b:"1",d:"D",a:true},{b:"2",d:"D"},{b:"&",d:"U"},{b:"3",d:"-"},{b:"&",d:"U"},{b:"4",d:"D"},{b:"&",d:"U"}],
+        note:"情境：民謠、校園歌、大部分中慢板流行歌。第3拍是『空刷』(手過去但不碰弦)，律動的靈魂就在那個留白。"},
+      {type:"strum",
+        caption:"b. 全下刷 8 Beat（搖滾／有力伴奏）",
+        beats:[{b:"1",d:"D",a:true},{b:"&",d:"D"},{b:"2",d:"D"},{b:"&",d:"D"},{b:"3",d:"D",a:true},{b:"&",d:"D"},{b:"4",d:"D"},{b:"&",d:"D"}],
+        note:"情境：搖滾、龐克、需要衝勁的段落。全部下刷最有力，重拍放 1、3。配 E/A/D 開放和弦超搖滾。"},
+      {type:"strum",
+        caption:"c. 8 Beat 下上交替（流行標準律動）",
+        beats:[{b:"1",d:"D",a:true},{b:"&",d:"U"},{b:"2",d:"D"},{b:"&",d:"U"},{b:"3",d:"D",a:true},{b:"&",d:"U"},{b:"4",d:"D"},{b:"&",d:"U"}],
+        note:"情境：最通用的流行節奏。下上不停擺動，穩定又好聽，換和弦練習都用它當底。"},
+      {type:"strum",
+        caption:"d. 抒情慢歌 分解+輕刷（clean 抒情）",
+        beats:[{b:"1",d:"D",lab:"低音"},{b:"2",d:"D"},{b:"&",d:"U"},{b:"3",d:"D",lab:"低音"},{b:"4",d:"D"},{b:"&",d:"U"}],
+        note:"情境：抒情歌主歌。每拍第1下先撥根音(低音弦)，再輕輕上下刷高音弦，柔和有層次。"},
+      {type:"strum",
+        caption:"e. 切分推進型（Pop/搖滾副歌帶勁）",
+        beats:[{b:"1",d:"D",a:true},{b:"&",d:"U"},{b:"2",d:"-"},{b:"&",d:"U",a:true},{b:"3",d:"D"},{b:"&",d:"U"},{b:"4",d:"D",a:true},{b:"&",d:"U"}],
+        note:"情境：副歌想更帶勁、往前衝。重音放在反拍(&)製造『切分』推進感，是很多流行/搖滾歌的抓耳關鍵。"},
+      {type:"strum",
+        caption:"f. 悶音律動 Palm Mute 型（搖滾動態對比）",
+        beats:[{b:"1",d:"D",m:true},{b:"&",d:"D",m:true},{b:"2",d:"D",a:true},{b:"&",d:"U"},{b:"3",d:"D",m:true},{b:"&",d:"D",m:true},{b:"4",d:"D",a:true},{b:"&",d:"U"}],
+        note:"情境：搖滾主歌壓抑、副歌爆發。虛線✕=右手手刀悶弦『咚咚』，放開時和弦炸開，動態對比超好聽。"},
+    ]},
+
+  "pentatonic":{hand:"L",title:"小調五聲音階 第1把位 (Am)",cat:"音階",
+    intro:"Solo 與即興的萬用起手式。先把這個盒子型背到不用看，之後所有 solo 都從這裡長出來。",
+    sections:[
+      {h:"指型(第5格起，根音A在第6弦5格)",list:[
+        "每弦兩個音，食指與小指(或無名)為主",
+        "上行：低音弦→高音弦；下行反向",
+        "先一音一拍 60 BPM，乾淨後再加速",
+      ]},
+    ],
+    cues:["紅點是根音A，記住根音位置最重要","背指型同時念音名更佳"],
+    warns:["只會上下跑 → 之後要打散順序才會變音樂"],
+    diagram:{type:"fretboard",startFret:5,frets:4,caption:"Am 五聲音階第1把位（紅=根音A）",
+      dots:[
+        {s:6,f:5,l:"",c:"#c62828",t:"root"},{s:6,f:8,l:"",c:"#1565c0"},
+        {s:5,f:5,l:"",c:"#1565c0"},{s:5,f:7,l:"",c:"#1565c0"},
+        {s:4,f:5,l:"",c:"#1565c0"},{s:4,f:7,l:"",c:"#1565c0"},
+        {s:3,f:5,l:"",c:"#1565c0"},{s:3,f:7,l:"",c:"#1565c0"},
+        {s:2,f:5,l:"",c:"#1565c0"},{s:2,f:8,l:"",c:"#1565c0"},
+        {s:1,f:5,l:"",c:"#c62828",t:"root"},{s:1,f:8,l:"",c:"#1565c0"},
+      ]}},
+
+  "pentatonic2":{hand:"L",title:"五聲音階 第1↔第2把位串聯",cat:"音階",
+    intro:"打通指板的第一步。把孤立的盒子連起來，solo 才能上下移動不卡。",
+    sections:[{h:"連接要點",list:[
+      "第1把位最高音 → 滑到第2把位",
+      "用滑音(slide)或換指當作橋樑",
+      "先慢速確認接點音相同，再加速",
+    ]}],
+    cues:["找兩個把位的『共用音』當交接點"],
+    warns:["把位之間斷掉、要重找位置 → 多練接點"],
+    diagram:{type:"fretboard",startFret:5,frets:7,caption:"第1把位(5格)→第2把位(8格)，橙色為交接滑音",
+      dots:[
+        {s:6,f:5,l:"",c:"#c62828",t:"root"},{s:6,f:8,l:"",c:"#1565c0"},
+        {s:5,f:5,l:"",c:"#1565c0"},{s:5,f:7,l:"",c:"#1565c0"},
+        {s:3,f:7,l:"",c:"#ff9800",t:"sl"},{s:3,f:9,l:"",c:"#1565c0"},
+        {s:1,f:8,l:"",c:"#1565c0"},{s:1,f:10,l:"",c:"#c62828",t:"root"},
+      ]}},
+
+  "power-chord":{hand:"L",title:"Power Chord 強力和弦",cat:"和弦",
+    intro:"搖滾/金屬的靈魂。只有根音+五度，破音下超有力，而且一個指型全指板移動。",
+    sections:[{h:"指型",list:[
+      "<b>食指</b>壓根音(第6或第5弦)",
+      "<b>無名指+小指</b>壓低兩條弦、高2格",
+      "只撥這2~3條弦，其他弦用手悶住",
+      "整個型不變，沿指板平移就是不同和弦",
+    ]}],
+    cues:["記根音在第6弦/第5弦的音名 = 和弦名","只響該響的弦，其他確實悶掉"],
+    warns:["撥到不該響的弦 → 破音下會很髒"],
+    diagram:{type:"fretboard",startFret:5,frets:4,caption:"A5 (根音6弦5格)：食指根音、無名+小指高2格",
+      dots:[
+        {s:6,f:5,l:"1",c:"#c62828",t:"root"},
+        {s:5,f:7,l:"3",c:"#1565c0"},
+        {s:4,f:7,l:"4",c:"#1565c0"},
+      ]}},
+
+  "bending":{hand:"L",title:"推弦 Bending",cat:"技巧",
+    intro:"電吉他最有『歌唱感』的技巧，也是最容易音不準的技巧。音準是一切，務必對照目標音練。",
+    sections:[{h:"動作",list:[
+      "<b>三指合力</b>(無名指主推、中指食指在後輔助)",
+      "用<b>手腕轉動</b>帶動，不是手指硬扳",
+      "拇指可輕勾琴頸上緣增加支點",
+      "全音(2格音高) / 半音(1格音高)兩種",
+    ]},
+    {h:"音準校正法",list:[
+      "先彈高2格的目標音記住音高",
+      "再推弦推到『一模一樣』的音高",
+      "用調音器或對照空弦驗證",
+    ]}],
+    cues:["先確定目標音高，再推上去對準","推弦同時也要悶住其他弦避免雜音"],
+    warns:["只用手指力硬推 → 推不滿、會酸","推過頭或不足 → 音不準最扣分"],
+    diagram:{type:"fretboard",startFret:5,frets:5,caption:"第3弦7格 全音推弦(↑) 目標=9格音高",
+      dots:[{s:3,f:7,l:"3",c:"#c62828",t:"bend"},{s:3,f:9,l:"目標",c:"#9e9e9e",t:"ghost"}]}},
+
+  "hopo":{hand:"L",title:"搥弦 Hammer-on / 勾弦 Pull-off",cat:"技巧",
+    intro:"連奏(legato)的核心，讓樂句滑順不顆粒。右手只撥第一下，後面靠左手出聲。",
+    sections:[{h:"搥弦 Hammer-on (HO)",list:[
+      "撥響第一個音後，<b>用力搥下</b>高一點的格子出聲",
+      "搥的手指要快、要準、靠近琴衍",
+    ]},
+    {h:"勾弦 Pull-off (PO)",list:[
+      "按好兩個音，撥響高音後手指<b>向下勾撥</b>弦離開",
+      "勾的瞬間順帶撥動弦，低音才會清楚",
+    ]}],
+    cues:["搥要快狠準、勾要帶一點橫向力","左手自己要能發出足夠音量"],
+    warns:["搥下去聲音很小 → 力道/速度不夠","勾弦只是放開 → 沒聲音，要『勾撥』"],
+    diagram:{type:"fretboard",startFret:5,frets:4,caption:"第3弦：5格搥7格(HO)、再勾回5格(PO)",
+      dots:[{s:3,f:5,l:"1",c:"#1565c0"},{s:3,f:7,l:"3",c:"#4caf50",t:"ho"}]}},
+
+  "slide":{hand:"L",title:"滑音 Slide",cat:"技巧",
+    intro:"把音『滑』到另一格，連接把位、增加情感。是串聯五聲音階把位的好橋樑。",
+    sections:[{h:"動作",list:[
+      "撥響起始音後，<b>保持按弦壓力</b>滑到目標格",
+      "滑到定點後手指停住，音才不會走音",
+      "上行滑(↗)、下行滑(↘)都要練",
+    ]}],
+    cues:["滑動全程保持按弦力道","目標格要『煞車煞準』"],
+    warns:["滑到一半放鬆 → 音斷掉","沒對準目標格 → 走音"],
+    diagram:{type:"fretboard",startFret:5,frets:6,caption:"第3弦 5格滑到9格(↗)",
+      dots:[{s:3,f:5,l:"",c:"#1565c0",t:"sl"},{s:3,f:9,l:"",c:"#ff9800"}]}},
+
+  "vibrato":{hand:"L",title:"顫音 Vibrato",cat:"技巧",
+    intro:"讓長音『活起來』的關鍵，是吉他手個人風格的指紋。用手腕做小幅度反覆推放。",
+    sections:[{h:"動作",list:[
+      "按好音後，<b>手腕轉動</b>讓弦做小幅上下(像快速微推弦)",
+      "頻率要<b>規律</b>、幅度先小再求大",
+      "想像歌手尾音的抖動",
+    ]}],
+    cues:["手腕帶動、不是手指抖","頻率穩定比幅度大重要"],
+    warns:["用手指亂抖 → 不規律、難聽","幅度忽大忽小 → 沒控制感"],
+    diagram:{type:"fretboard",startFret:5,frets:4,caption:"第2弦8格 加 Vibrato (〰)",
+      dots:[{s:2,f:8,l:"",c:"#c62828",t:"vib"}]}},
+
+  "caged":{hand:"L",title:"CAGED 系統",cat:"樂理",
+    intro:"用 C-A-G-E-D 五個你已會的開放和弦形狀，把整個指板的和弦與音階串起來。",
+    sections:[{h:"概念",list:[
+      "同一個和弦，可用5種形狀在指板不同位置彈出",
+      "C型→A型→G型→E型→D型 沿指板上行銜接",
+      "先掌握 E型 與 A型（最常用的封閉和弦根源）",
+    ]}],
+    cues:["先記每個形狀的『根音在哪條弦』","形狀之間是相連的，不是孤立的"],
+    warns:["死背5個圖 → 要理解根音與銜接關係"],
+    diagram:{type:"fretboard",startFret:1,frets:5,caption:"E型封閉和弦概念(食指當capo橫按)",
+      dots:[{s:6,f:1,l:"1",c:"#1565c0",t:"bar"},{s:5,f:3,l:"3",c:"#1565c0"},{s:4,f:3,l:"4",c:"#1565c0"},{s:3,f:2,l:"2",c:"#1565c0"}]}},
+
+  "major-scale":{hand:"L",title:"大調音階(全指板)",cat:"音階",
+    intro:"所有調式與和弦的母體。公式：全-全-半-全-全-全-半。先掌握 C 大調 / A 小調(同音)。",
+    sections:[{h:"練習",list:[
+      "C大調 = 全部白鍵的音(C D E F G A B)",
+      "A小調與C大調用同樣的音，只是起點不同",
+      "用3-note-per-string指型練全指板",
+    ]}],
+    cues:["唱名+彈奏一起，建立音感","注意半音的位置(E-F、B-C)"],
+    warns:["只記指型不記音名 → 不會應用"],
+    diagram:{type:"fretboard",startFret:5,frets:5,caption:"A小調/C大調 第5格區段示意",
+      dots:[
+        {s:6,f:5,l:"",c:"#c62828",t:"root"},{s:6,f:7,l:"",c:"#1565c0"},{s:6,f:8,l:"",c:"#1565c0"},
+        {s:5,f:5,l:"",c:"#1565c0"},{s:5,f:7,l:"",c:"#1565c0"},{s:5,f:8,l:"",c:"#1565c0"},
+      ]}},
+
+  "blues-scale":{hand:"L",title:"Blues 音階",cat:"音階",
+    intro:"五聲音階 + 一個『blue note』(降五度)，瞬間有藍調味。Blues solo 的主武器。",
+    sections:[{h:"組成",list:[
+      "小調五聲音階 + ♭5 那個藍調音",
+      "藍調音是『經過音』，輕輕帶過最有味",
+      "搭配推弦、滑音更道地",
+    ]}],
+    cues:["blue note 不要停太久，當作調味","多用問答句(call & response)"],
+    warns:["把藍調音當長音 → 會很不和諧"],
+    diagram:{type:"fretboard",startFret:5,frets:5,caption:"Am Blues：黃色=blue note(♭5)",
+      dots:[
+        {s:6,f:5,l:"",c:"#c62828",t:"root"},{s:6,f:8,l:"",c:"#1565c0"},
+        {s:5,f:5,l:"",c:"#1565c0"},{s:5,f:6,l:"♭5",c:"#ffc107"},{s:5,f:7,l:"",c:"#1565c0"},
+        {s:4,f:5,l:"",c:"#1565c0"},{s:4,f:7,l:"",c:"#1565c0"},
+      ]}},
+
+  "improv":{hand:"L",title:"即興 Solo 入門",cat:"進階",
+    intro:"把音階變成音樂。重點不是彈很多音，而是『樂句感』與『留白』。",
+    sections:[{h:"方法",list:[
+      "先用五聲音階跟 backing track 慢慢『講話』",
+      "建立3–5個招牌樂句(licks)當素材",
+      "善用留白、重複、推弦製造張力",
+      "鎖定根音與和弦音當『落腳點』",
+    ]}],
+    cues:["少即是多，先求好聽不求快","樂句要有開頭/張力/收尾"],
+    warns:["從頭到尾不停跑音階 → 沒有音樂性"],
+    diagram:{type:"fretboard",startFret:5,frets:4,caption:"萬用第1把位即興盒(紅=根音落腳點)",
+      dots:[
+        {s:6,f:5,l:"",c:"#c62828",t:"root"},{s:6,f:8,l:"",c:"#1565c0"},
+        {s:5,f:5,l:"",c:"#1565c0"},{s:5,f:7,l:"",c:"#1565c0"},
+        {s:4,f:5,l:"",c:"#1565c0"},{s:4,f:7,l:"",c:"#1565c0"},
+        {s:3,f:5,l:"",c:"#1565c0"},{s:3,f:7,l:"",c:"#1565c0"},
+        {s:2,f:5,l:"",c:"#1565c0"},{s:2,f:8,l:"",c:"#1565c0"},
+        {s:1,f:5,l:"",c:"#c62828",t:"root"},{s:1,f:8,l:"",c:"#1565c0"},
+      ]}},
+
+  /* ---------- 右手 🤚 ---------- */
+  "pick-grip":{hand:"R",title:"Pick 握法與撥弦基礎",cat:"基礎",
+    intro:"右手是『發聲』的源頭。握法決定音色與速度上限，回鍋先把握法歸零定型。",
+    sections:[{h:"握法",list:[
+      "拇指與食指側面夾住 pick，<b>露出約0.5–1cm</b>",
+      "握力『不掉就好』，太緊會僵、音色硬",
+      "撥弦用<b>手腕</b>為主，不是整隻手臂",
+      "pick 與弦約呈小角度，順順滑過",
+    ]}],
+    cues:["放鬆、用手腕、pick露出少一點較好控制"],
+    warns:["握太緊/露太多 → 容易勾弦、速度卡"],
+    diagram:{type:"strum",caption:"下上交替撥弦 (每拍一下)",
+      beats:[{b:"1",d:"D"},{b:"2",d:"U"},{b:"3",d:"D"},{b:"4",d:"U"}]}},
+
+  "alt-pick":{hand:"R",title:"交替撥弦 Alternate Picking",cat:"基礎",
+    intro:"提速的根本。嚴格『下上下上』不亂跳，效率最高也最穩。爬格子/音階都要配合它。",
+    sections:[{h:"要點",list:[
+      "<b>下(D)上(U)</b>嚴格交替，不可連續兩下下撥",
+      "撥弦幅度小、貼著弦，省力又快",
+      "跟節拍器，八分音符 = 每拍下上各一",
+      "階梯加速：每天 +5 BPM，亂掉就退回",
+    ]}],
+    cues:["小幅度、手腕主導、嚴守下上順序"],
+    warns:["全部用下撥 → 速度天花板很低","幅度太大 → 提速到一定程度就崩"],
+    diagram:{type:"strum",caption:"八分音符交替撥弦 (1 & 2 & 3 & 4 &)",
+      beats:[{b:"1",d:"D"},{b:"&",d:"U"},{b:"2",d:"D"},{b:"&",d:"U"},{b:"3",d:"D"},{b:"&",d:"U"},{b:"4",d:"D"},{b:"&",d:"U"}]}},
+
+  "strum-basic":{hand:"R",title:"基礎刷弦 Strumming",cat:"節奏",
+    intro:"伴奏的根本。先求穩定的下刷，再加入上刷，手腕像鐘擺持續擺動。",
+    sections:[{h:"要點",list:[
+      "手腕<b>持續擺動</b>(像節拍器)，刷到弦才出聲、空刷不碰弦",
+      "下刷力道稍重(重拍)、上刷輕巧",
+      "經典型：下 下上 上下上 (D DU UDU)",
+      "手放鬆，刷過全部該響的弦",
+    ]}],
+    cues:["手腕不停擺動，用『碰/不碰弦』控制節奏","重拍在 1、3 拍"],
+    warns:["每下都停頓重新啟動 → 節奏會卡頓","上下刷力道一樣 → 沒有律動"],
+    diagram:{type:"strum",caption:"經典刷法 D-DU-UDU (—=空刷)",
+      beats:[{b:"1",d:"D",a:true},{b:"2",d:"D"},{b:"&",d:"U"},{b:"3",d:"-"},{b:"&",d:"U"},{b:"4",d:"D"},{b:"&",d:"U"}]}},
+
+  "palm-mute":{hand:"R",title:"悶音 Palm Muting (P.M.)",cat:"技巧",
+    intro:"搖滾/金屬律動的命脈。右手手刀輕靠琴橋，做出『咚咚咚』有顆粒感的悶音。",
+    sections:[{h:"動作",list:[
+      "右手<b>手刀(小指側)</b>輕靠在<b>琴橋(bridge)</b>上",
+      "靠太前面→音全悶死；靠太後→沒效果，找甜蜜點",
+      "配 power chord 做八分音符『咚咚咚』",
+      "可悶音與開放音交替做動態",
+    ]}],
+    cues:["手刀位置在琴橋附近微調出顆粒感","力道輕，音還聽得到音高"],
+    warns:["靠太前面 → 完全悶死沒音高","位置一直跑 → 音色不穩"],
+    diagram:{type:"strum",caption:"八分音符悶音 (P.M. 全程，●=悶音下撥)",
+      beats:[{b:"1",d:"D",m:true},{b:"&",d:"D",m:true},{b:"2",d:"D",m:true},{b:"&",d:"D",m:true},{b:"3",d:"D",m:true},{b:"&",d:"D",m:true},{b:"4",d:"D",m:true},{b:"&",d:"D",m:true}]}},
+
+  "funk-strum":{hand:"R",title:"Funk 切分刷弦 / Cutting",cat:"節奏",
+    intro:"放克的靈魂是『律動與切分』。大量16分音符、悶音cutting(嘎嘎聲)製造律動，手腕全程不停。",
+    sections:[{h:"要點",list:[
+      "右手<b>16分音符</b>持續上下擺動(DUDU DUDU)",
+      "大部分是<b>悶音cutting</b>(左手輕放弦上出無音高的『嘎』)",
+      "在特定拍點『放開左手』讓和弦真正響起",
+      "重點是<b>切分</b>：重音放在反拍",
+    ]}],
+    cues:["手腕16分不停擺，用左手控制響/不響","空間感與切分比音符多寡重要"],
+    warns:["手停下來找拍 → 律動就死了","全部都響 → 沒有funk的『卡』感"],
+    diagram:{type:"strum",caption:"16分 Funk：X=悶音cutting、●=和弦響",
+      beats:[{b:"1",d:"D",a:true},{b:"e",d:"U",m:true},{b:"&",d:"D",m:true},{b:"a",d:"U"},{b:"2",d:"D",m:true},{b:"e",d:"U",m:true},{b:"&",d:"D",a:true},{b:"a",d:"U",m:true}]}},
+
+  "arpeggio":{hand:"R",title:"分解和弦 Arpeggio (Clean)",cat:"節奏",
+    intro:"抒情/流行的常用伴奏。把和弦『一條一條』撥出來，clean tone 下很有空間感。",
+    sections:[{h:"要點",list:[
+      "左手按好和弦不動，右手<b>逐弦撥</b>",
+      "可用pick或手指(p指撥低音、i m a撥高音)",
+      "經典順序：低音→高音→中間，營造流動",
+      "音與音之間讓它『延續』不要悶掉",
+    ]}],
+    cues:["左手和弦穩穩按住，讓每個音延續","clean tone、力道平均"],
+    warns:["撥弦時左手鬆掉 → 音斷掉","力道忽大忽小 → 不平均"],
+    diagram:{type:"strum",caption:"分解和弦撥弦(逐弦,非掃刷) 6→3→4→3 弦序示意",
+      beats:[{b:"1",d:"D",lab:"6弦"},{b:"2",d:"D",lab:"3弦"},{b:"3",d:"D",lab:"4弦"},{b:"4",d:"D",lab:"3弦"}]}},
+
+  /* ---------- 概念/雙手 ---------- */
+  "read-tab":{hand:"",title:"看懂 TAB / 六線譜 / 和弦圖",cat:"基礎",
+    intro:"吉他的『地圖』。六線譜不看五線譜也能彈，數字代表第幾格。",
+    sections:[{h:"六線譜 TAB",list:[
+      "六條線=六條弦，<b>最上面是第1弦(最細)</b>，最下面第6弦(最粗)",
+      "線上的數字=按第幾格，0=空弦",
+      "數字疊在一起=同時彈(和弦)",
+      "符號：h=搥弦, p=勾弦, /=上滑, \\\\=下滑, b=推弦, ~=顫音",
+    ]},
+    {h:"和弦圖",list:[
+      "直線=弦、橫線=琴衍，圓點=按的位置",
+      "點裡的數字=用第幾指(1食2中3無名4小指)",
+      "x=不彈該弦, o=空弦彈",
+    ]}],
+    cues:["TAB 看『弦+格』，和弦圖看『點+指法』"],
+    warns:["搞反弦的上下 → 整個彈錯弦"],
+    diagram:{type:"fretboard",startFret:1,frets:4,caption:"和弦圖讀法示例(數字=手指)",
+      dots:[{s:5,f:3,l:"3",c:"#1565c0"},{s:4,f:2,l:"2",c:"#1565c0"},{s:2,f:1,l:"1",c:"#1565c0"}]}},
+
+  "rhythm-basic":{hand:"",title:"節奏基礎與節拍器",cat:"樂理",
+    intro:"節奏是音樂的骨架。節拍器是你最誠實的老師，所有技巧都該配它練。",
+    sections:[{h:"概念",list:[
+      "4/4拍 = 每小節4拍，最常見",
+      "四分音符=1拍、八分=半拍(1 & 2 &)、十六分=1/4拍(1 e & a)",
+      "重拍通常在 1、3 拍",
+      "先用慢速感受『拍點』，腳跟著打拍",
+    ]}],
+    cues:["跟著節拍器、腳打拍，內化穩定的時間感"],
+    warns:["不用節拍器自己練 → 節奏會飄"]},
+
+  "syncopation":{hand:"",title:"切分音 / 附點 / 休止符",cat:"樂理",
+    intro:"讓節奏『有趣』的關鍵。重音放在意想不到的地方(反拍)就是切分，是funk/流行的味道來源。",
+    sections:[{h:"概念",list:[
+      "切分:重音放在反拍(&的位置)，製造推進感",
+      "附點:延長前一個音符一半時值",
+      "休止符:該『停』的地方停，留白也是音樂",
+    ]}],
+    cues:["數『1 e & a』把16分格子數清楚再放重音","休止=主動悶弦，不是放著不管"],
+    warns:["切分變成搶拍/拖拍 → 還是要回到節拍器"]},
+
+  "diatonic":{hand:"",title:"順階和弦 / 級數 (抓歌)",cat:"樂理",
+    intro:"懂級數就能快速抓歌、移調。流行歌80%是那幾個級數進行的排列組合。",
+    sections:[{h:"概念",list:[
+      "一個調有7個順階和弦，用羅馬數字 I ii iii IV V vi vii°",
+      "大調常見:I–IV–V、I–V–vi–IV(芭樂神進行)",
+      "ii–V–I 是爵士/流行的萬用解決",
+      "聽出根音與進行 → 套級數 → 換任何調都會彈",
+    ]}],
+    cues:["先抓bass根音走向，再套級數公式","C大調:C=I F=IV G=V Am=vi"],
+    warns:["死記特定調 → 換調就不會，要用級數思考"]},
+};
+
+</script>
+<script>
+/* === theory-data.js === */
+/* ============================================================
+   樂理補充內容 THEORY
+   每個 entry: {title, cat, body:[{h,p?,list?,diagram?}], diagrams?:[...], relatedLesson?:[]}
+   diagram 種類同 plan-engine：
+     - fretboard {type,startFret,frets,marks?,dots:[{s,f,l,c,t}]}
+     - circle    {type:"circle",highlight:[...],caption}
+   紅點 c:"#c62828"=根音；藍 c:"#1565c0"=音；黃 c:"#ffc107"=特殊音
+   獨立檔案，方便單獨擴充樂理。
+   ============================================================ */
+const R="#c62828", B="#1565c0", Y="#ffc107", G2="#2e7d32";
+
+const THEORY = {
+  "note-names":{title:"音名與指板音位",cat:"基礎",
+    body:[
+      {h:"12個音",p:"一個八度有12個半音：C C# D D# E F F# G G# A A# B，再回到C。其中 E→F、B→C 之間只差半音(沒有黑鍵)。"},
+      {h:"吉他空弦音(粗→細)",list:["6弦=E","5弦=A","4弦=D","3弦=G","2弦=B","1弦=E"]},
+      {h:"找音規則",list:["每往高1格 = 升半音","第12格 = 空弦音高八度","記住3、5、7、9、12格的標記點當路標"]},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:1,frets:12,caption:"第6弦(E)音名分布",
+        dots:[{s:6,f:1,l:"F",c:B},{s:6,f:3,l:"G",c:B},{s:6,f:5,l:"A",c:R},{s:6,f:7,l:"B",c:B},{s:6,f:8,l:"C",c:B},{s:6,f:10,l:"D",c:B},{s:6,f:12,l:"E",c:R}]},
+      {type:"fretboard",startFret:1,frets:12,caption:"第5弦(A)音名分布",
+        dots:[{s:5,f:2,l:"B",c:B},{s:5,f:3,l:"C",c:B},{s:5,f:5,l:"D",c:B},{s:5,f:7,l:"E",c:B},{s:5,f:8,l:"F",c:B},{s:5,f:10,l:"G",c:B},{s:5,f:12,l:"A",c:R}]},
+    ],
+    relatedLesson:["read-tab","chromatic"]},
+
+  "interval":{title:"音程 (Interval)",cat:"基礎",
+    body:[
+      {h:"什麼是音程",p:"兩個音之間的距離，用『度』表示。是和弦與音階的建構基礎。"},
+      {h:"常用音程(以格數算)",list:["小三度=3格","大三度=4格","完全四度=5格","完全五度=7格(Power Chord的根音到五度)","八度=12格"]},
+      {h:"為什麼重要",p:"Power Chord = 根音+完全五度；大和弦 = 根音+大三度+完全五度。懂音程才懂和弦怎麼組成。"},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:5,frets:4,caption:"根音(紅) + 完全五度 + 八度：Power Chord 的形狀來源",
+        dots:[{s:6,f:5,l:"R",c:R},{s:5,f:7,l:"5",c:B},{s:4,f:7,l:"8",c:G2}]},
+      {type:"fretboard",startFret:5,frets:4,caption:"大三和弦三音：根音(R)+大三度(3)+完全五度(5)",
+        dots:[{s:6,f:5,l:"R",c:R},{s:5,f:4,l:"3",c:Y},{s:5,f:7,l:"5",c:B}]},
+    ],
+    relatedLesson:["power-chord","bending"]},
+
+  "pentatonic-theory":{title:"五聲音階的原理 + 5個把位",cat:"音階",
+    body:[
+      {h:"組成",p:"小調五聲音階 = 小調音階去掉2個最容易『不和諧』的音，剩下5個音：根音(1)、♭3、4、5、♭7。"},
+      {h:"以 A 小調五聲為例",list:["音:A C D E G","根音 A 是『家』，樂句通常從這裡出發或回到這裡","因為去掉了半音衝突音，怎麼彈都不太會錯 → 適合即興入門"]},
+      {h:"五個把位(Box)",p:"同樣5個音在整個指板上會形成5個互相銜接的指型(box)。把它們連起來就能打通整條琴頸。下面紅點都是根音 A：",},
+      {h:"大調五聲",p:"同樣5個音換個起點就變大調五聲(明亮)，例如 C 大調五聲 = A 小調五聲同音，差在『以誰為家』。"},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:5,frets:4,caption:"Box 1（第5格，最常用，根音在6弦）",
+        dots:[{s:6,f:5,l:"",c:R},{s:6,f:8,l:"",c:B},{s:5,f:5,l:"",c:B},{s:5,f:7,l:"",c:B},{s:4,f:5,l:"",c:B},{s:4,f:7,l:"",c:R},{s:3,f:5,l:"",c:B},{s:3,f:7,l:"",c:B},{s:2,f:5,l:"",c:B},{s:2,f:8,l:"",c:B},{s:1,f:5,l:"",c:R},{s:1,f:8,l:"",c:B}]},
+      {type:"fretboard",startFret:7,frets:4,caption:"Box 2（第7格）",
+        dots:[{s:6,f:8,l:"",c:B},{s:6,f:10,l:"",c:B},{s:5,f:7,l:"",c:B},{s:5,f:10,l:"",c:B},{s:4,f:7,l:"",c:R},{s:4,f:10,l:"",c:B},{s:3,f:7,l:"",c:B},{s:3,f:9,l:"",c:B},{s:2,f:8,l:"",c:B},{s:2,f:10,l:"",c:R},{s:1,f:8,l:"",c:B},{s:1,f:10,l:"",c:B}]},
+      {type:"fretboard",startFret:9,frets:5,caption:"Box 3（第9-10格）",
+        dots:[{s:6,f:10,l:"",c:B},{s:6,f:12,l:"",c:B},{s:5,f:10,l:"",c:B},{s:5,f:12,l:"",c:R},{s:4,f:10,l:"",c:B},{s:4,f:12,l:"",c:B},{s:3,f:9,l:"",c:B},{s:3,f:12,l:"",c:B},{s:2,f:10,l:"",c:R},{s:2,f:13,l:"",c:B},{s:1,f:10,l:"",c:B},{s:1,f:12,l:"",c:B}]},
+      {type:"fretboard",startFret:12,frets:4,caption:"Box 4（第12格）",
+        dots:[{s:6,f:12,l:"",c:B},{s:6,f:15,l:"",c:B},{s:5,f:12,l:"",c:R},{s:5,f:15,l:"",c:B},{s:4,f:12,l:"",c:B},{s:4,f:14,l:"",c:B},{s:3,f:12,l:"",c:B},{s:3,f:14,l:"",c:R},{s:2,f:13,l:"",c:B},{s:2,f:15,l:"",c:B},{s:1,f:12,l:"",c:B},{s:1,f:15,l:"",c:B}]},
+      {type:"fretboard",startFret:14,frets:4,caption:"Box 5（第14-15格，再上去接回 Box 1 高八度）",
+        dots:[{s:6,f:15,l:"",c:B},{s:6,f:17,l:"",c:R},{s:5,f:15,l:"",c:B},{s:5,f:17,l:"",c:B},{s:4,f:14,l:"",c:B},{s:4,f:17,l:"",c:B},{s:3,f:14,l:"",c:R},{s:3,f:17,l:"",c:B},{s:2,f:15,l:"",c:B},{s:2,f:17,l:"",c:B},{s:1,f:15,l:"",c:B},{s:1,f:17,l:"",c:R}]},
+    ],
+    relatedLesson:["pentatonic","pentatonic2","improv","blues-scale"]},
+
+  "blue-note":{title:"Blue Note 藍調音",cat:"音階",
+    body:[
+      {h:"什麼是 blue note",p:"在小調五聲音階中加入的 ♭5(降五度)。這個音『不穩定』、有張力，正是藍調憂鬱味道的來源。"},
+      {h:"怎麼用",list:["當『經過音』快速帶過，不要停留","常配合推弦/滑音從 ♭5 滑到 5","停太久會很不和諧 → 它是調味料不是主菜"]},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:5,frets:5,caption:"Am Blues：黃色=blue note(♭5)，紅=根音",
+        dots:[{s:6,f:5,l:"",c:R},{s:6,f:8,l:"",c:B},{s:5,f:5,l:"",c:B},{s:5,f:6,l:"♭5",c:Y},{s:5,f:7,l:"",c:B},{s:4,f:5,l:"",c:B},{s:4,f:7,l:"",c:R},{s:3,f:5,l:"",c:B},{s:3,f:7,l:"",c:B},{s:3,f:8,l:"♭5",c:Y}]},
+    ],
+    relatedLesson:["blues-scale"]},
+
+  "major-scale-theory":{title:"大調音階公式 + 指型",cat:"音階",
+    body:[
+      {h:"全音半音公式",p:"大調音階 = 全-全-半-全-全-全-半 (W-W-H-W-W-W-H)。全音=2格，半音=1格。"},
+      {h:"C大調為例",list:["C(全)D(全)E(半)F(全)G(全)A(全)B(半)C","剛好是鋼琴全部白鍵","半音落在 E-F 與 B-C"]},
+      {h:"關係小調",p:"從大調的第6個音開始彈 = 它的關係小調。C大調的關係小調是 A 小調(用同樣的音)。下面用 A 小調/C 大調(同音)展示指型，紅=A根音："},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:5,frets:4,caption:"A自然小調/C大調 指型①(第5格)",
+        dots:[{s:6,f:5,l:"",c:R},{s:6,f:7,l:"",c:B},{s:6,f:8,l:"",c:B},{s:5,f:5,l:"",c:B},{s:5,f:7,l:"",c:B},{s:5,f:8,l:"",c:B},{s:4,f:5,l:"",c:B},{s:4,f:7,l:"",c:R},{s:3,f:5,l:"",c:B},{s:3,f:7,l:"",c:B},{s:2,f:5,l:"",c:B},{s:2,f:6,l:"",c:B},{s:2,f:8,l:"",c:B},{s:1,f:5,l:"",c:R},{s:1,f:7,l:"",c:B},{s:1,f:8,l:"",c:B}]},
+      {type:"fretboard",startFret:7,frets:5,caption:"A自然小調/C大調 指型②(第7-8格，往上接)",
+        dots:[{s:6,f:8,l:"",c:B},{s:6,f:10,l:"",c:B},{s:5,f:7,l:"",c:B},{s:5,f:8,l:"",c:B},{s:5,f:10,l:"",c:B},{s:4,f:7,l:"",c:R},{s:4,f:10,l:"",c:B},{s:3,f:7,l:"",c:B},{s:3,f:9,l:"",c:B},{s:3,f:10,l:"",c:B},{s:2,f:8,l:"",c:B},{s:2,f:10,l:"",c:R},{s:1,f:8,l:"",c:B},{s:1,f:10,l:"",c:B}]},
+    ],
+    relatedLesson:["major-scale","caged"]},
+
+  "caged-theory":{title:"CAGED 系統 (5個形狀)",cat:"指板",
+    body:[
+      {h:"核心概念",p:"用 C-A-G-E-D 五個開放和弦的形狀，把同一個和弦在指板上的5個位置串起來，打通整個指板。下面是5個形狀的『母型』(以開放和弦呈現)。"},
+      {h:"銜接順序",p:"沿指板往高音方向，形狀循環為 C→A→G→E→D→(回C)。相鄰兩個形狀共用一些音。"},
+      {h:"用途",list:["在任何把位都能找到和弦","把音階與和弦『綁在一起』記憶","Solo 時知道現在在哪個和弦的範圍內"]},
+      {h:"練法建議",list:["先熟 E 型 與 A 型(最常用的封閉和弦根源)","再把 C/G/D 型補上","用一個和弦(如C)在5個位置都彈出來"]},
+    ],
+    diagrams:[
+      {type:"fretboard",startFret:1,frets:4,caption:"C 形狀 (x32010)",marks:{6:"x",5:"f",4:"f",3:"o",2:"f",1:"o"},
+        dots:[{s:5,f:3,l:"3",c:B},{s:4,f:2,l:"2",c:B},{s:2,f:1,l:"1",c:B}]},
+      {type:"fretboard",startFret:1,frets:4,caption:"A 形狀 (x02220)",marks:{6:"x",5:"o",4:"f",3:"f",2:"f",1:"o"},
+        dots:[{s:4,f:2,l:"1",c:B},{s:3,f:2,l:"2",c:B},{s:2,f:2,l:"3",c:B}]},
+      {type:"fretboard",startFret:1,frets:4,caption:"G 形狀 (320003)",marks:{6:"f",5:"f",4:"o",3:"o",2:"o",1:"f"},
+        dots:[{s:6,f:3,l:"2",c:B},{s:5,f:2,l:"1",c:B},{s:1,f:3,l:"3",c:B}]},
+      {type:"fretboard",startFret:1,frets:4,caption:"E 形狀 (022100) — 最常變封閉和弦",marks:{6:"o",5:"f",4:"f",3:"f",2:"o",1:"o"},
+        dots:[{s:5,f:2,l:"2",c:B},{s:4,f:2,l:"3",c:B},{s:3,f:1,l:"1",c:B}]},
+      {type:"fretboard",startFret:1,frets:4,caption:"D 形狀 (xx0232)",marks:{6:"x",5:"x",4:"o",3:"f",2:"f",1:"f"},
+        dots:[{s:3,f:2,l:"1",c:B},{s:1,f:2,l:"2",c:B},{s:2,f:3,l:"3",c:B}]},
+    ],
+    relatedLesson:["caged","major-scale"]},
+
+  "diatonic-theory":{title:"順階和弦與級數",cat:"和聲",
+    body:[
+      {h:"順階和弦",p:"用一個調的音堆疊出的7個和弦。大調的級數品質固定為：I(大) ii(小) iii(小) IV(大) V(大) vi(小) vii°(減)。"},
+      {h:"C大調順階和弦",list:["I=C, ii=Dm, iii=Em, IV=F, V=G, vi=Am, vii°=Bdim","流行神進行 I–V–vi–IV = C–G–Am–F","12小節藍調 = I–IV–V"]},
+      {h:"五度圈",p:"順時針每格上行完全五度。相鄰的和弦最常一起出現(如 C-G-F 就是 I-V-IV)。橘色為 C 大調的 I(C)、IV(F)、V(G)："},
+      {h:"用級數抓歌/移調",p:"聽出進行的『級數』而非絕對和弦，換任何調都能立刻彈，這是抓歌與即興的關鍵能力。"},
+    ],
+    diagrams:[
+      {type:"circle",highlight:["C","F","G"],caption:"五度圈：橘=C大調的 I / IV / V"},
+    ],
+    relatedLesson:["diatonic","open-chords","improv"]},
+
+  "rhythm-theory":{title:"節奏與拍子",cat:"節奏",
+    body:[
+      {h:"拍號",p:"4/4 = 每小節4拍、以四分音符為1拍，最常見。"},
+      {h:"音符時值",list:["全音符=4拍","二分音符=2拍","四分音符=1拍","八分音符=半拍(數 1 & 2 &)","十六分音符=1/4拍(數 1 e & a)"]},
+      {h:"切分音",p:"把重音放到反拍(& 或 e a 的位置)，製造推進與律動感，是 funk/流行的味道來源。"},
+    ],
+    diagrams:[
+      {type:"strum",caption:"十六分音符數法：1 e & a｜＞=重音落在反拍=切分",
+        beats:[{b:"1",d:"D"},{b:"e",d:"U"},{b:"&",d:"D",a:true},{b:"a",d:"U"},{b:"2",d:"D"},{b:"e",d:"U"},{b:"&",d:"D",a:true},{b:"a",d:"U"}]},
+    ],
+    relatedLesson:["rhythm-basic","syncopation","funk-strum","strum-basic"]},
+};
+
+</script>
+<script>
+/* === plan-engine.js === */
+/* ============================================================
+   引擎：渲染計畫頁 / 教學頁 / SVG 圖示 / 分頁與跳轉
+   ============================================================ */
+const TAGNAME={skill:"技巧",theory:"樂理",song:"練習曲",record:"錄音"};
+const STRINGS=["1(e)","2(B)","3(G)","4(D)","5(A)","6(E)"]; // 由細到粗，s=1..6
+
+/* ---------- 分頁 ---------- */
+function switchTab(p){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===p));
+  document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   SVG 指板圖 (左手)
+   spec:{startFret,frets,dots:[{s,f,l,c,t}]}
+   s:弦 1(細)~6(粗)  f:絕對格號  l:標籤  c:顏色  t:記號
+   ============================================================ */
+function fretboardSVG(spec){
+  const W=460,H=210,padL=42,padT=28,padR=26,padB=26;
+  const nFrets=spec.frets, startF=spec.startFret;
+  const gridW=W-padL-padR, gridH=H-padT-padB;
+  const fw=gridW/nFrets;          // 每格寬
+  const sh=gridH/5;               // 弦間距(6弦5間隔)
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:480px">`;
+  // 背板
+  s+=`<rect x="${padL}" y="${padT}" width="${gridW}" height="${gridH}" fill="#f3e6cf" stroke="#b8946a" rx="3"/>`;
+  // 起始格若為1，畫粗弦枕
+  if(startF===1){s+=`<rect x="${padL-4}" y="${padT}" width="5" height="${gridH}" fill="#444"/>`;}
+  // 琴衍(縱線)
+  for(let i=0;i<=nFrets;i++){
+    const x=padL+i*fw;
+    s+=`<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT+gridH}" stroke="#9a9a9a" stroke-width="${i===0?3:2}"/>`;
+  }
+  // 弦(橫線) s=1 在最上(細)
+  for(let i=0;i<6;i++){
+    const y=padT+i*sh;
+    s+=`<line x1="${padL}" y1="${y}" x2="${padL+gridW}" y2="${y}" stroke="#7a5c3a" stroke-width="${1+i*0.4}"/>`;
+  }
+  // 把位點(常見3,5,7,9,12格)
+  const inlay=[3,5,7,9,12,15,17];
+  for(let f=startF;f<startF+nFrets;f++){
+    if(inlay.includes(f)){
+      const x=padL+(f-startF+0.5)*fw;
+      if(f===12){
+        s+=`<circle cx="${x}" cy="${padT+sh*1.5}" r="4" fill="#cbb89a"/>`;
+        s+=`<circle cx="${x}" cy="${padT+sh*3.5}" r="4" fill="#cbb89a"/>`;
+      }else{
+        s+=`<circle cx="${x}" cy="${padT+gridH/2}" r="4" fill="#cbb89a"/>`;
+      }
+    }
+  }
+  // 格號標示
+  for(let f=startF;f<startF+nFrets;f++){
+    const x=padL+(f-startF+0.5)*fw;
+    s+=`<text x="${x}" y="${H-8}" font-size="11" fill="#8a6d49" text-anchor="middle">${f}</text>`;
+  }
+  // 弦名(左側)
+  for(let i=0;i<6;i++){
+    s+=`<text x="${padL-22}" y="${padT+i*sh+4}" font-size="10" fill="#8a6d49" text-anchor="middle">${STRINGS[i].charAt(STRINGS[i].length-2)}</text>`;
+  }
+  // 空弦(○)/不彈(✕) 標記：marks={弦號:"o"|"x"|"f"}
+  if(spec.marks){
+    for(let str=1;str<=6;str++){
+      const m=spec.marks[str];
+      if(m!=="o"&&m!=="x")continue;
+      const y=padT+(str-1)*sh;
+      const mx=padL-10;
+      if(m==="o"){
+        s+=`<circle cx="${mx}" cy="${y}" r="5" fill="none" stroke="#2e7d32" stroke-width="2"/>`;
+      }else{
+        s+=`<text x="${mx}" y="${y+4}" font-size="13" fill="#c62828" text-anchor="middle" font-weight="bold">✕</text>`;
+      }
+    }
+  }
+  // 音點
+  (spec.dots||[]).forEach(d=>{
+    const yi=d.s-1;                       // s=1 →最上
+    const y=padT+yi*sh;
+    const x=padL+(d.f-startF+0.5)*fw;
+    const col=d.c||"#1565c0";
+    const r=12;
+    // 記號處理
+    if(d.t==="ghost"){
+      s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${col}" stroke-width="2" stroke-dasharray="3 3"/>`;
+    }else{
+      s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke="#fff" stroke-width="1.5"/>`;
+    }
+    if(d.l){s+=`<text x="${x}" y="${y+4}" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">${d.l}</text>`;}
+    // 技巧記號（上方小標）
+    const mk={bend:"↑",bendH:"½↑",ho:"H",po:"P",sl:"／",vib:"〰",root:"R",bar:"⎺"};
+    if(d.t&&mk[d.t]&&d.t!=="ghost"){
+      s+=`<text x="${x+r+2}" y="${y-r+4}" font-size="12" fill="${col}" font-weight="bold">${mk[d.t]}</text>`;
+    }
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+/* ============================================================
+   SVG 撥弦/刷弦圖 (右手)
+   spec:{beats:[{b拍名,d方向 D/U/-,m悶音,a重音,lab}]}
+   D=下撥↓ U=上撥↑ -=空刷 m=悶音(虛框) a=重音(粗)
+   ============================================================ */
+function strumSVG(spec){
+  const beats=spec.beats||[];
+  const n=beats.length;
+  const cw=Math.max(46, Math.min(60, 460/n)); // 每拍寬
+  const W=cw*n+20, H=130, topY=30, arrowTop=44, arrowBot=92, labY=116;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px">`;
+  // 基準線
+  s+=`<line x1="10" y1="${arrowTop-8}" x2="${W-10}" y2="${arrowTop-8}" stroke="#ccc" stroke-width="1"/>`;
+  s+=`<line x1="10" y1="${arrowBot+8}" x2="${W-10}" y2="${arrowBot+8}" stroke="#ccc" stroke-width="1"/>`;
+  beats.forEach((bt,i)=>{
+    const cx=10+cw*i+cw/2;
+    const isBeat=/^[0-9]$/.test(bt.b); // 正拍
+    // 拍名
+    s+=`<text x="${cx}" y="${topY}" font-size="13" fill="${isBeat?'#222':'#999'}" text-anchor="middle" font-weight="${isBeat?'bold':'normal'}">${bt.b}</text>`;
+    const sw=bt.a?4:2.4;             // 重音粗
+    const col=bt.m?"#e65100":(bt.a?"#c62828":"#1565c0");
+    if(bt.d==="D"){
+      // 下箭頭 ↓
+      s+=`<line x1="${cx}" y1="${arrowTop}" x2="${cx}" y2="${arrowBot}" stroke="${col}" stroke-width="${sw}" ${bt.m?'stroke-dasharray="4 3"':''}/>`;
+      s+=`<polygon points="${cx-5},${arrowBot-7} ${cx+5},${arrowBot-7} ${cx},${arrowBot}" fill="${col}"/>`;
+    }else if(bt.d==="U"){
+      // 上箭頭 ↑
+      s+=`<line x1="${cx}" y1="${arrowTop}" x2="${cx}" y2="${arrowBot}" stroke="${col}" stroke-width="${sw}" ${bt.m?'stroke-dasharray="4 3"':''}/>`;
+      s+=`<polygon points="${cx-5},${arrowTop+7} ${cx+5},${arrowTop+7} ${cx},${arrowTop}" fill="${col}"/>`;
+    }else{
+      // 空刷 —
+      s+=`<text x="${cx}" y="${(arrowTop+arrowBot)/2+5}" font-size="18" fill="#bbb" text-anchor="middle">—</text>`;
+    }
+    // 悶音標記 X
+    if(bt.m){s+=`<text x="${cx+9}" y="${arrowTop+6}" font-size="11" fill="#e65100" font-weight="bold">✕</text>`;}
+    if(bt.a){s+=`<text x="${cx}" y="${arrowBot+22}" font-size="11" fill="#c62828" text-anchor="middle" font-weight="bold">＞</text>`;}
+    if(bt.lab){s+=`<text x="${cx}" y="${labY}" font-size="9" fill="#777" text-anchor="middle">${bt.lab}</text>`;}
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+function diagramHTML(d){
+  if(!d)return"";
+  const svg = d.type==="fretboard"?fretboardSVG(d):strumSVG(d);
+  return `<div class="diagram">${svg}<div class="diagram-cap">${d.caption||""}</div></div>`;
+}
+
+/* ============================================================
+   渲染：計畫頁
+   ============================================================ */
+const phasesRoot=document.getElementById('phases');
+let idx=0;
+DATA.forEach((p,pi)=>{
+  const ph=document.createElement('div');ph.className='phase';
+  ph.innerHTML=`<div class="phase-head">
+      <span class="phase-badge">${p.badge}</span>
+      <div class="phase-title"><h3>${p.month} ${p.title}</h3><span>${p.sub}</span></div>
+      <span class="phase-mini" id="pm${pi}"></span>
+      <span class="arrow">▶</span>
+    </div><div class="phase-body"><div class="phase-inner"></div></div>`;
+  const inner=ph.querySelector('.phase-inner');
+  p.weeks.forEach(wk=>{
+    const wd=document.createElement('div');wd.className='week';
+    let html=`<h4>${wk.w}</h4>`;
+    wk.tasks.forEach(t=>{
+      const [type,text,hand,lid]=t;
+      const id='t'+(idx++);
+      const handBadge = hand==="L"?`<span class="hand hand-L">✋左</span>`:hand==="R"?`<span class="hand hand-R">🤚右</span>`:"";
+      const learn = lid?`<button class="learn-btn" onclick="gotoLesson('${lid}')">📖 教學</button>`:"";
+      html+=`<div class="task"><input type="checkbox" id="${id}" data-p="${pi}">
+        <span class="lbl"><span class="tag t-${type}">${TAGNAME[type]}</span><span class="txt">${text}</span>${handBadge}${learn}</span></div>`;
+    });
+    wd.innerHTML=html;inner.appendChild(wd);
+  });
+  ph.querySelector('.phase-head').onclick=()=>ph.classList.toggle('open');
+  phasesRoot.appendChild(ph);
+});
+if(phasesRoot.firstChild)phasesRoot.firstChild.classList.add('open');
+
+/* ============================================================
+   渲染：教學頁
+   ============================================================ */
+const lessonsRoot=document.getElementById('lessons');
+const lessonOrder=Object.keys(LESSONS);
+// 反向索引：由 THEORY.relatedLesson 建立 lessonId -> [theoryId]
+const lessonToTheory={};
+if(typeof THEORY!=="undefined"){
+  Object.keys(THEORY).forEach(tid=>{
+    (THEORY[tid].relatedLesson||[]).forEach(lid=>{
+      (lessonToTheory[lid]=lessonToTheory[lid]||[]).push(tid);
+    });
+  });
+}
+lessonOrder.forEach(key=>{
+  const L=LESSONS[key];
+  const el=document.createElement('div');
+  el.className='lesson';el.id='lesson-'+key;
+  el.dataset.search=(L.title+" "+L.cat+" "+L.intro).toLowerCase();
+  const pill = L.hand==="L"?`<span class="pill pill-L">✋ 左手</span>`:L.hand==="R"?`<span class="pill pill-R">🤚 右手</span>`:`<span class="pill" style="background:#37474f;color:#b0bec5">🧠 概念</span>`;
+  let body=`<div class="lesson-inner">`;
+  body+=`<p>${L.intro}</p>`;
+  // 主圖
+  body+=diagramHTML(L.diagram);
+  if(L.diagram){
+    if(L.diagram.type==="fretboard"){
+      body+=`<div class="legend"><span><span class="dot" style="background:#c62828"></span>根音</span><span><span class="dot" style="background:#1565c0"></span>音/指法</span><span><span class="dot" style="background:#4caf50"></span>搥弦H</span><span><span class="dot" style="background:#ff9800"></span>滑音／</span><span>↑推弦 〰顫音</span></div>`;
+    }else{
+      body+=`<div class="legend"><span style="color:#1565c0">↓下撥 ↑上撥</span><span style="color:#e65100">✕ 悶音cutting(虛線)</span><span style="color:#c62828">＞重音</span><span>— 空刷</span></div>`;
+    }
+  }
+  // 額外圖
+  (L.extra||[]).forEach(d=>{
+    if(d.groupTitle){ body+=`<h4 class="grp-title">${d.groupTitle}</h4>`; if(d.groupDesc)body+=`<p class="grp-desc">${d.groupDesc}</p>`; }
+    body+=diagramHTML(d);
+    if(d.note){ body+=`<div class="diagram-note">💡 ${d.note}</div>`; }
+    if(d.legend){
+      if(d.type==="fretboard"){
+        body+=`<div class="legend"><span><span class="dot" style="background:#c62828"></span>根音</span><span><span class="dot" style="background:#1565c0"></span>音/指法</span><span>○空弦 ✕不彈</span></div>`;
+      }else{
+        body+=`<div class="legend"><span style="color:#1565c0">↓下撥 ↑上撥</span><span style="color:#e65100">✕ 悶音(虛線)</span><span style="color:#c62828">＞重音</span><span>— 空刷</span></div>`;
+      }
+    }
+  });
+  // 段落
+  (L.sections||[]).forEach(sec=>{
+    body+=`<h4>${sec.h}</h4><ul>`;
+    sec.list.forEach(li=>body+=`<li>${li}</li>`);
+    body+=`</ul>`;
+  });
+  (L.cues||[]).forEach(c=>body+=`<div class="cue"><b>✅ 要訣：</b>${c}</div>`);
+  (L.warns||[]).forEach(w=>body+=`<div class="warn"><b>⚠️ 易錯：</b>${w}</div>`);
+  // 相關樂理補充連結
+  const relT=lessonToTheory[key]||[];
+  if(relT.length){
+    body+=`<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:.85em;color:var(--muted)">🎼 樂理補充：</span>`;
+    relT.forEach(tid=>{
+      body+=`<button class="learn-btn" style="border-color:var(--purple);color:#ce93d8" onclick="gotoTheory('${tid}')">🔗 ${THEORY[tid].title}</button>`;
+    });
+    body+=`</div>`;
+  }
+  body+=`</div>`;
+  el.innerHTML=`<div class="lesson-head">${pill}<h3>${L.title}</h3><span style="font-size:.78em;color:var(--muted)">${L.cat}</span><span class="arrow">▶</span></div><div class="lesson-body">${body}</div>`;
+  el.querySelector('.lesson-head').onclick=()=>el.classList.toggle('open');
+  lessonsRoot.appendChild(el);
+});
+
+/* 從計畫頁跳到教學 */
+function gotoLesson(key){
+  switchTab('lessons');
+  const el=document.getElementById('lesson-'+key);
+  if(!el)return;
+  // 收合其他、展開目標
+  document.querySelectorAll('#lessons .lesson').forEach(l=>l.classList.remove('open'));
+  el.classList.add('open');
+  setTimeout(()=>{el.scrollIntoView({behavior:'smooth',block:'start'});
+    el.style.boxShadow='0 0 0 2px var(--accent)';
+    setTimeout(()=>el.style.boxShadow='',1600);},120);
+}
+
+/* 教學搜尋 */
+function filterLessons(){
+  const q=document.getElementById('lessonSearch').value.trim().toLowerCase();
+  let shown=0;
+  document.querySelectorAll('#lessons .lesson').forEach(l=>{
+    const hit=!q||l.dataset.search.includes(q);
+    l.style.display=hit?'':'none';if(hit)shown++;
+  });
+  document.getElementById('noResult').style.display=shown?'none':'block';
+}
+
+/* ============================================================
+   渲染：樂理頁
+   ============================================================ */
+// 反向索引：theoryId 也可連回技巧 lesson
+const theoryToLesson={};
+if(typeof THEORY!=="undefined"){
+  Object.keys(THEORY).forEach(tid=>{theoryToLesson[tid]=THEORY[tid].relatedLesson||[];});
+}
+const theoryRoot=document.getElementById('theory');
+if(theoryRoot && typeof THEORY!=="undefined"){
+  Object.keys(THEORY).forEach(tid=>{
+    const T=THEORY[tid];
+    const el=document.createElement('div');
+    el.className='lesson';el.id='theory-'+tid;
+    let txt=T.title+" "+T.cat;
+    (T.body||[]).forEach(b=>{txt+=" "+(b.h||"")+" "+(b.p||"")+" "+((b.list||[]).join(" "));});
+    el.dataset.search=txt.toLowerCase();
+    let body=`<div class="lesson-inner">`;
+    (T.body||[]).forEach(sec=>{
+      if(sec.h)body+=`<h4>${sec.h}</h4>`;
+      if(sec.p)body+=`<p>${sec.p}</p>`;
+      if(sec.list){body+=`<ul>`;sec.list.forEach(li=>body+=`<li>${li}</li>`);body+=`</ul>`;}
+      if(sec.diagram){body+=diagramHTML(sec.diagram);}
+    });
+    (T.diagrams||[]).forEach(d=>{body+=diagramHTML(d);});
+    // 連回技巧教學
+    const relL=theoryToLesson[tid]||[];
+    if(relL.length){
+      body+=`<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:.85em;color:var(--muted)">🎸 相關技巧：</span>`;
+      relL.forEach(lid=>{
+        if(typeof LESSONS!=="undefined"&&LESSONS[lid])
+          body+=`<button class="learn-btn" onclick="gotoLesson('${lid}')">📖 ${LESSONS[lid].title}</button>`;
+      });
+      body+=`</div>`;
+    }
+    body+=`</div>`;
+    const pill=`<span class="pill" style="background:#4a148c;color:#ce93d8">🎼 樂理</span>`;
+    el.innerHTML=`<div class="lesson-head">${pill}<h3>${T.title}</h3><span style="font-size:.78em;color:var(--muted)">${T.cat}</span><span class="arrow">▶</span></div><div class="lesson-body">${body}</div>`;
+    el.querySelector('.lesson-head').onclick=()=>el.classList.toggle('open');
+    theoryRoot.appendChild(el);
+  });
+}
+
+/* 跳到樂理 */
+function gotoTheory(tid){
+  switchTab('theory');
+  const el=document.getElementById('theory-'+tid);
+  if(!el)return;
+  document.querySelectorAll('#theory .lesson').forEach(l=>l.classList.remove('open'));
+  el.classList.add('open');
+  setTimeout(()=>{el.scrollIntoView({behavior:'smooth',block:'start'});
+    el.style.boxShadow='0 0 0 2px var(--purple)';
+    setTimeout(()=>el.style.boxShadow='',1600);},120);
+}
+
+/* 樂理搜尋 */
+function filterTheory(){
+  const q=document.getElementById('theorySearch').value.trim().toLowerCase();
+  let shown=0;
+  document.querySelectorAll('#theory .lesson').forEach(l=>{
+    const hit=!q||l.dataset.search.includes(q);
+    l.style.display=hit?'':'none';if(hit)shown++;
+  });
+  document.getElementById('noResultT').style.display=shown?'none':'block';
+}
+
+/* ============================================================
+   進度儲存
+   ============================================================ */
+const boxes=[...document.querySelectorAll('input[type=checkbox]')];
+function save(){const s={};boxes.forEach(b=>s[b.id]=b.checked);localStorage.setItem('eg6m',JSON.stringify(s));}
+function load(){const s=JSON.parse(localStorage.getItem('eg6m')||'{}');boxes.forEach(b=>{if(s[b.id])b.checked=true});}
+function update(){
+  const done=boxes.filter(b=>b.checked).length,total=boxes.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('ptext').textContent=`${done} / ${total} (${pct}%)`;
+  DATA.forEach((p,pi)=>{
+    const pb=boxes.filter(b=>b.dataset.p==pi);
+    const pd=pb.filter(b=>b.checked).length;
+    const e=document.getElementById('pm'+pi);if(e)e.textContent=`${pd}/${pb.length}`;
+  });
+}
+boxes.forEach(b=>b.addEventListener('change',()=>{save();update();}));
+function resetAll(){if(confirm('確定要清除所有進度嗎？')){localStorage.removeItem('eg6m');boxes.forEach(b=>b.checked=false);update();}}
+load();update();
+
+</script>
+</body>
+</html>
