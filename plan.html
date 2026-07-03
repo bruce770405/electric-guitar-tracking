@@ -32,6 +32,7 @@
     border-radius:8px 8px 0 0;font-weight:bold;font-size:.95em;transition:all .2s}
   .tab:hover{color:var(--text)}
   .tab.active{color:#fff;background:var(--accent)}
+  .tab .ti{font-style:normal;margin-right:5px}  /* emoji 不斜體；桌面與文字同排 */
   .page{display:none}
   .page.active{display:block;animation:fade .3s}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -171,6 +172,41 @@
   .song-item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
   .song-main{flex:1}
   .song-note{font-size:.78em;color:var(--muted);margin-top:3px}
+
+  /* ============================================================
+     響應式：手機(≤600px) 選單改為底部固定導航列(App tab bar)
+     平板/桌面維持原頂部選單
+     ============================================================ */
+  @media (max-width:600px){
+    body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+    header{padding:22px 16px 18px}
+    header h1{font-size:1.4em}
+    header p{font-size:.82em}
+
+    /* 頂部 .tabs 移到底部固定 */
+    .tabs{
+      position:fixed;top:auto;bottom:0;left:0;right:0;
+      gap:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));
+      border-bottom:none;border-top:1px solid var(--line);
+      box-shadow:0 -2px 14px rgba(0,0,0,.5);
+      justify-content:space-around;
+    }
+    .tab{
+      flex:1 1 0;min-width:0;
+      padding:6px 1px 4px;border-radius:10px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+      font-weight:600;line-height:1.1;
+    }
+    .tab .ti{font-size:1.35rem;line-height:1.1}      /* emoji 圖示放上方 */
+    .tab .tl{font-size:.62rem;letter-spacing:-.02em;white-space:nowrap} /* 文字放下方 */
+    .tab.active{background:transparent;color:var(--accent)}
+    .tab.active .ti{filter:drop-shadow(0 0 6px rgba(255,87,34,.55))}
+
+    .wrap{padding:0 12px}
+    .info-card{padding:14px;margin:12px 0}
+    .lesson-inner{padding:4px 12px 16px}
+    .phase-inner{padding:0 10px 12px}
+  }
 </style>
 </head>
 <body>
@@ -180,12 +216,12 @@
 </header>
 
 <div class="tabs">
-  <div class="tab active" data-page="dash" onclick="switchTab('dash')">🏠 總覽</div>
-  <div class="tab" data-page="plan" onclick="switchTab('plan')">📋 計畫</div>
-  <div class="tab" data-page="logs" onclick="switchTab('logs')">✍️ 日誌</div>
-  <div class="tab" data-page="songs" onclick="switchTab('songs')">🎵 曲目</div>
-  <div class="tab" data-page="lessons" onclick="switchTab('lessons')">📚 技巧</div>
-  <div class="tab" data-page="theory" onclick="switchTab('theory')">🎼 樂理</div>
+  <div class="tab active" data-page="dash" onclick="switchTab('dash')"><i class="ti">🏠</i><span class="tl">總覽</span></div>
+  <div class="tab" data-page="plan" onclick="switchTab('plan')"><i class="ti">📋</i><span class="tl">計畫</span></div>
+  <div class="tab" data-page="logs" onclick="switchTab('logs')"><i class="ti">✍️</i><span class="tl">日誌</span></div>
+  <div class="tab" data-page="songs" onclick="switchTab('songs')"><i class="ti">🎵</i><span class="tl">曲目</span></div>
+  <div class="tab" data-page="lessons" onclick="switchTab('lessons')"><i class="ti">📚</i><span class="tl">技巧</span></div>
+  <div class="tab" data-page="theory" onclick="switchTab('theory')"><i class="ti">🎼</i><span class="tl">樂理</span></div>
 </div>
 
 <div class="wrap">
