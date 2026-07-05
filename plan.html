@@ -26,8 +26,11 @@
   .wrap{max-width:940px;margin:0 auto;padding:0 16px}
 
   /* Tabs */
-  .tabs{display:flex;gap:4px;background:var(--card);position:sticky;top:0;z-index:60;
-    padding:8px 8px 0;border-bottom:1px solid var(--line);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .tabs{display:flex;gap:4px;position:sticky;top:0;z-index:60;
+    padding:8px 8px 0;border-bottom:.5px solid rgba(255,255,255,.08);
+    background:rgba(24,27,34,.72);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+    box-shadow:0 1px 0 rgba(0,0,0,.3)}
   .tab{flex:1;text-align:center;padding:12px;cursor:pointer;color:var(--muted);
     border-radius:8px 8px 0 0;font-weight:bold;font-size:.95em;transition:all .2s}
   .tab:hover{color:var(--text)}
@@ -92,6 +95,13 @@
   .tip{background:linear-gradient(135deg,#1f232c,#181b22);border:1px dashed var(--accent2);
     border-radius:10px;padding:14px;margin:18px 0;font-size:.88em}
   .tip b{color:var(--accent2)}
+  /* 計畫頁尾：未完待續 */
+  .tbc{text-align:center;padding:34px 16px 10px;margin-top:8px}
+  .tbc-line{width:40px;height:3px;border-radius:3px;margin:0 auto 18px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .tbc-title{font-size:1.15em;font-weight:600;letter-spacing:.04em;
+    color:var(--text);opacity:.92}
+  .tbc-sub{font-size:.84em;color:var(--muted);margin-top:8px;line-height:1.6}
   footer{text-align:center;color:var(--muted);font-size:.82em;margin-top:24px}
 
   /* Teaching page */
@@ -147,6 +157,12 @@
   .add-row input{flex:1;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 12px;font-size:.92em}
   .add-btn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:1.1em;cursor:pointer;font-weight:bold}
   .add-btn.wide{padding:11px 16px;font-size:.92em;width:100%}
+  .btn-plain{background:rgba(120,120,128,.16);color:var(--text);border:.5px solid rgba(255,255,255,.1);
+    border-radius:12px;padding:12px 16px;font-size:.92em;font-weight:590;cursor:pointer;
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background .2s,transform .1s}
+  .btn-plain:hover{background:rgba(120,120,128,.24)}
+  .btn-plain:active{transform:scale(.985)}
+  .btn-plain.wide{width:100%}
   .add-btn:hover{opacity:.9}
   .backup-row{display:flex;flex-direction:column;gap:8px}
   .li{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0}
@@ -183,24 +199,27 @@
     header h1{font-size:1.4em}
     header p{font-size:.82em}
 
-    /* 頂部 .tabs 移到底部固定 */
+    /* 頂部 .tabs 移到底部固定 —— 液態玻璃 */
     .tabs{
       position:fixed;top:auto;bottom:0;left:0;right:0;
-      gap:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));
-      border-bottom:none;border-top:1px solid var(--line);
-      box-shadow:0 -2px 14px rgba(0,0,0,.5);
+      gap:2px;padding:7px 8px calc(7px + env(safe-area-inset-bottom,0px));
+      border-bottom:none;border-top:.5px solid rgba(255,255,255,.09);
+      background:rgba(22,24,30,.72);
+      -webkit-backdrop-filter:saturate(180%) blur(22px);
+      backdrop-filter:saturate(180%) blur(22px);
+      box-shadow:0 -.5px 0 rgba(255,255,255,.05);
       justify-content:space-around;
     }
     .tab{
       flex:1 1 0;min-width:0;
-      padding:6px 1px 4px;border-radius:10px;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-      font-weight:600;line-height:1.1;
+      padding:9px 2px;border-radius:11px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:590;line-height:1;color:rgba(235,235,245,.6);
+      transition:color .2s,background .2s;
     }
-    .tab .ti{font-size:1.35rem;line-height:1.1}      /* emoji 圖示放上方 */
-    .tab .tl{font-size:.62rem;letter-spacing:-.02em;white-space:nowrap} /* 文字放下方 */
-    .tab.active{background:transparent;color:var(--accent)}
-    .tab.active .ti{filter:drop-shadow(0 0 6px rgba(255,87,34,.55))}
+    .tab .ti{display:none}                              /* Apple 風：手機隱藏 emoji */
+    .tab .tl{font-size:.82rem;letter-spacing:.01em;white-space:nowrap}
+    .tab.active{background:rgba(255,87,34,.16);color:var(--accent)}
 
     .wrap{padding:0 12px}
     .info-card{padding:14px;margin:12px 0}
@@ -262,6 +281,12 @@
     </div>
 
     <div id="phases"></div>
+
+    <div class="tbc">
+      <div class="tbc-line"></div>
+      <div class="tbc-title">To be continued…</div>
+      <div class="tbc-sub">未完待續 — 完成這 24 週後，下半年課綱正在規劃中 🎸</div>
+    </div>
 
     <div class="tip">
       <b>💡 核心心法：</b>慢而乾淨 &gt; 快而髒。先在「能彈乾淨的最慢速度」站穩，

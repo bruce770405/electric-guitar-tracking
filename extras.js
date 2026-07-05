@@ -59,10 +59,10 @@ function renderDashboard(){
     `<div class="li"><label><input type="checkbox" ${g.done?"checked":""} onchange="toggleGoal('${g.id}',this.checked)"><span class="${g.done?'done':''}">${esc(g.text)}</span></label><button class="del" onclick="delItem('goals','${g.id}')">✕</button></div>`
   ).join("")+`</div>`;
   // 備份
-  h+=`<h3 class="sec-h">💾 備份 / 還原</h3>
+  h+=`<h3 class="sec-h">備份 / 還原</h3>
     <div class="backup-row">
-      <button class="add-btn wide" onclick="Store.download()">⬇️ 匯出備份(JSON)</button>
-      <button class="add-btn wide" onclick="document.getElementById('importFile').click()">⬆️ 匯入備份</button>
+      <button class="btn-plain wide" onclick="Store.download()">匯出備份</button>
+      <button class="btn-plain wide" onclick="document.getElementById('importFile').click()">匯入備份</button>
       <input type="file" id="importFile" accept="application/json" style="display:none" onchange="doImport(this)">
     </div>
     <p class="hint">換裝置時：在舊裝置匯出，傳到新裝置後匯入即可還原全部進度。</p>`;
